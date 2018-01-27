@@ -1,4 +1,4 @@
-# Final Year Project - Web Frontend
+# Final Year Project - Web App Frontend
 
 ## Final Year Project: Backups Restoration Centre
 
@@ -13,3 +13,6 @@ This repo contains the web app frontend for the system. It server as a user frie
 * NodeJS
 * ReactJS
 
+### Dependencies
+
+* semantic-ui-css
