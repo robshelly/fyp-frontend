@@ -13,6 +13,8 @@ This repo contains the web app frontend for the system. It server as a user frie
 * NodeJS
 * ReactJS
 
-### Dependencies
+### Packages
 
 * semantic-ui-css
+* superagent
+* jenkins

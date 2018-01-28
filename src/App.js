@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import request from 'superagent';
 import 'semantic-ui-css/semantic.min.css';
 
 class SelectDecryptKeyOption extends React.Component {
@@ -98,11 +99,15 @@ class RunRestoreForm extends React.Component {
 class App extends Component {
 
   runJob (location,file,dataType,decryptKey) {
-    console.log("Running Job\n"
-      + "Location: " + location
-      + "\nFile: "+ file
-      + "\nData Type: " + dataType
-      + "\nDecryption Key: " + decryptKey)
+    request
+      .post('http://127.0.0.1:4000/api/')
+      .send({location: location, file: file, dataType: dataType, decryptKey: decryptKey})
+      .set('Content-Type', 'application/json')
+      .end(function(err, res) {
+        if (err || !res.ok) {
+          alert('Error Triggering Job');
+        } 
+      });
   }
   render() {
     // Test data to ensure form works
