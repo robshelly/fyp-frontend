@@ -18,3 +18,6 @@ This repo contains the web app frontend for the system. It server as a user frie
 * semantic-ui-css
 * superagent
 * jenkins
+
+
+
