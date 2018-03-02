@@ -1,0 +1,23 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: " Backup Test Resotration System"
+host: localhost:4000
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /schedules:
+    get:
+      description: Get a list of Jenkins Jobs
+      summary: Get jobs
+      operationId: GetJobs
+      responses:
+        "200":
+          description: Success
+          schema:
+            type : object
