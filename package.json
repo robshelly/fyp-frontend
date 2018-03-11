@@ -8,7 +8,10 @@
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "foreman": "^2.0.0",
+    "global": "^4.3.2",
+    "gulp-cli": "^2.0.1",
     "jenkins": "^0.20.1",
+    "jenkins-api": "^0.3.1",
     "morgan": "~1.0.0",
     "nodemon": "^1.14.11",
     "react": "^16.2.0",
@@ -26,5 +29,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "js-yaml": "^3.10.0",
+    "json-schema-deref-sync": "^0.4.0",
+    "require-dir": "^1.0.0"
   }
 }

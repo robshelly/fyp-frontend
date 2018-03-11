@@ -73,7 +73,7 @@ class RunRestoreForm extends React.Component {
             <option value={"json"}>
               json
             </option>
-            <option value={"json"}>
+            <option value={"mysql"}>
               mysql
             </option>
           </select>

@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": " Backup Test Resotration System"
+    "title": " Backup Test Restoration System"
   },
   "host": "localhost:4000",
   "basePath": "/",
@@ -16,16 +16,421 @@
     "application/json"
   ],
   "paths": {
-    "/schedules": {
+    "/restores": {
       "get": {
-        "description": "Get a list of Jenkins Jobs",
-        "summary": "Get jobs",
-        "operationId": "GetJobs",
+        "description": "Get all recent restore results",
+        "summary": "Get Restores",
+        "operationId": "GetRestores",
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "schema": {
-              "type": "object"
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "integer"
+                  },
+                  "result": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": [
+                {
+                  "id": "1",
+                  "timestamp": 1520114032,
+                  "result": "SUCCESS"
+                },
+                {
+                  "id": "2",
+                  "timestamp": 1520114255,
+                  "result": "FAILURE"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Run a backup test restoration",
+        "summary": "Run Restore",
+        "operationId": "RunRestore",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Restore",
+            "description": "The test restoration to run",
+            "schema": {
+              "type": "object",
+              "required": [
+                "location",
+                "file",
+                "dataType",
+                "decryptKey"
+              ],
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "dataType": {
+                  "type": "string"
+                },
+                "decryptKey": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "location": "192.168.1.99",
+                "file": "/backup/backup.json.gpg",
+                "dataType": "json",
+                "decryptKey": "backupKey1"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The restoration was successfully triggered"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/schedules": {
+      "get": {
+        "description": "Get a list of scheduled restores",
+        "summary": "Get Schedules",
+        "operationId": "GetSchedules",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "lastRun": {
+                    "type": "integer"
+                  },
+                  "lastResult": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": [
+                {
+                  "id": "scheduled-backup-one",
+                  "lastRun": 1520114032,
+                  "lastResult": "SUCCESS"
+                },
+                {
+                  "id": "scheduled-backup-two",
+                  "lastRun": 1520114255,
+                  "lastResult": "FAILURE"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new scheduled restoration",
+        "summary": "Create Schedule",
+        "operationId": "CreateSchedule",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Restore",
+            "description": "The name of the schedule restore",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "location",
+                "file",
+                "dataType",
+                "decryptKey",
+                "frequency"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "dataType": {
+                  "type": "string"
+                },
+                "decryptKey": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "name": "backup-one",
+                "location": "192.168.1.99",
+                "file": "backup/backup.json.gpg",
+                "dataType": "json",
+                "decryptKey": "backupKey1",
+                "frequency": "0 0 * * 7"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Schedule successfully created"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/schedules/{scheduleName}": {
+      "get": {
+        "description": "Get detail of a scheduled restore",
+        "summary": "Get Schedule",
+        "operationId": "GetSchedule",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "scheduleName",
+            "in": "path",
+            "description": "The name of the schedule requested",
+            "required": true,
+            "type": "string",
+            "example": "backup-one"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": null,
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "fail": {
+                "type": "string"
+              },
+              "dataType": {
+                "type": "string"
+              },
+              "decryptKey": {
+                "type": "string"
+              },
+              "frequency": {
+                "type": "string"
+              },
+              "tests": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "integer"
+                    },
+                    "result": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "example": {
+              "name": "backup-one",
+              "location": "192.168.1.99",
+              "file": "backup/backup.json.gpg",
+              "dataType": "json",
+              "decryptKey": "backupKey1",
+              "frequency": "0 0 * * 7",
+              "builds": [
+                {
+                  "id": "1",
+                  "timestamp": 1520114032,
+                  "result": "SUCCESS"
+                },
+                {
+                  "id": "2",
+                  "timestamp": 1520114255,
+                  "result": "FAILURE"
+                }
+              ]
+            }
+          },
+          "404": {
+            "description": "Schedule not found"
+          }
+        }
+      },
+      "put": {
+        "description": "Update an existing scheduled restoration",
+        "summary": "Update Schedule",
+        "operationId": "UpdateSchedule",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "name": "scheduleName",
+            "in": "path",
+            "description": "The name of the scheduled restore",
+            "required": true,
+            "type": "string",
+            "example": "backup-one"
+          },
+          {
+            "in": "body",
+            "name": "Restore",
+            "description": "The name of the schedule restore",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "location",
+                "file",
+                "dataType",
+                "decryptKey",
+                "frequency"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "dataType": {
+                  "type": "string"
+                },
+                "decryptKey": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "name": "backup1",
+                "location": "192.168.99.99",
+                "file": "backup/backup2",
+                "dataType": "mysql",
+                "decryptKey": "backupKey2",
+                "frequency": "0 0 1 * *"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule successfully updated"
+          },
+          "404": {
+            "description": "Schedule not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a scheduled restoration",
+        "summary": "Delete Schedule",
+        "operationId": "DeleteSchedule",
+        "parameters": [
+          {
+            "name": "scheduleName",
+            "in": "path",
+            "description": "The name of the schedule restored",
+            "required": true,
+            "type": "string",
+            "example": "backup-one"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The resource was deleted successfully"
+          },
+          "404": {
+            "description": "Schedule not found"
+          }
+        }
+      }
+    },
+    "/sshKeys": {
+      "get": {
+        "description": "Get list of SSH keys for servers",
+        "summary": "Get SSH Keys",
+        "operationId": "GetSSHKeys",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "ssh-key-backups-server",
+                "ssh-key-restoration-server"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/gpgKeys": {
+      "get": {
+        "description": "Get list of GPG decryption leys",
+        "summary": "Get GPG Keys",
+        "operationId": "GetGPGKeys",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "gpg-key-backup-users",
+                "gpg-key-backup-products"
+              ]
             }
           }
         }

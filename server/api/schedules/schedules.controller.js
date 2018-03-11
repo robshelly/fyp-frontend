@@ -1,13 +1,27 @@
-var jenkins = require('jenkins')({ baseUrl: 'http://admin:cloudTech2017@34.244.123.103:8080', crumbIssuer: false });
+var jenkins = require('../../../vars').jenkins;
 
-// Trigger a restore
-exports.getScheduledRestores = function(req, res) {
+// Get scheduled restores
+exports.getScheduledRestores = require("./schedule.controller.all.js").getAll
 
-  console.log("API::Fetching Jenkins Jobs")
-  jenkins.info(function(err, data) {
-    if (err) throw err;
+// Get a single scheduled restore
+exports.getScheduledRestore = require("./schedule.controller.get.js").get
 
-    res.json(data)
+// Create scheduled restore
+exports.createScheduledRestore = require("./schedule.controller.create.js").create
+
+// Update scheduled restore
+exports.updateScheduledRestore = require("./schedule.controller.update.js").update
+
+// Delete a scheduled restore
+exports.deleteScheduledRestore = function(req, res) {
+
+  console.log("API::Deleting Scheduled Restores")
+  console.log("\tName: + " + req.params.scheduleName)
+
+  jenkins.job.destroy('schedule-'+req.params.scheduleName, function(err) {
+    if (err){ return console.log(err); }
+    console.log("\tSuccess")
+    res.json("The schedule was deleted successfully!")
   });
 
-};
+}
