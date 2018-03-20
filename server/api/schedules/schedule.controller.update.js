@@ -91,12 +91,6 @@ exports.update = function(req, res) {
 </flow-definition>`
 
 
-  // jenkinsApi.create_job('api-'+req.body.name, template, function(err, data) {
-  //   if (err){ return console.log("Error: "+err); }
-  //   console.log(data)
-  //   res.json(data)
-  // });
-
   jenkins.update_job('schedule-'+req.body.name, template, function(err, data) {
     // if no error, job was copied 
     if (err){ return console.log(err); }

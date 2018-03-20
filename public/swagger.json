@@ -370,7 +370,7 @@
           {
             "name": "scheduleName",
             "in": "path",
-            "description": "The name of the schedule restored",
+            "description": "The name of the scheduled restore",
             "required": true,
             "type": "string",
             "example": "backup-one"
@@ -455,6 +455,31 @@
         }
       }
     },
+    "/sshKeys/{keyName}": {
+      "delete": {
+        "description": "Delete an SSH key",
+        "summary": "Delete SSH Key",
+        "operationId": "DeleteSSHKey",
+        "parameters": [
+          {
+            "name": "keyName",
+            "in": "path",
+            "description": "The name of the SSH key",
+            "required": true,
+            "type": "string",
+            "example": "test-server-key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The resource was deleted successfully"
+          },
+          "404": {
+            "description": "Key not found"
+          }
+        }
+      }
+    },
     "/gpgKeys": {
       "get": {
         "description": "Get list of GPG decryption leys",
@@ -530,6 +555,31 @@
           },
           "405": {
             "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/gpgKeys/{keyName}": {
+      "delete": {
+        "description": "Delete a GPG key",
+        "summary": "Delete GPG Key",
+        "operationId": "DeleteGPGKey",
+        "parameters": [
+          {
+            "name": "keyName",
+            "in": "path",
+            "description": "The name of the GPG key",
+            "required": true,
+            "type": "string",
+            "example": "test-backup-decryption-key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The resource was deleted successfully"
+          },
+          "404": {
+            "description": "Key not found"
           }
         }
       }

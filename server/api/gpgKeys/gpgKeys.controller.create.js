@@ -29,10 +29,10 @@ exports.create = function(req, res) {
       }
     }`)
     .then((data) => {
-      resolve("Username/Password credential created")
+      resolve("Username/Password pair created")
     })
     .catch((err) => {
-      console.log("Error creating username/password credential:" + err)
+      console.log("Error creating username/password pair:" + err)
       reject(err)
     });
   })
@@ -51,7 +51,7 @@ exports.create = function(req, res) {
       }
     }`)
     .then((data) => {
-      resolve("Success")
+      resolve("Secret key created")
     })
     .catch((err) => {
       console.log("Error creating secret key:" + err)

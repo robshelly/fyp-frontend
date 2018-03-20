@@ -1,8 +1,6 @@
 var request = require('superagent');
 var ip = require('../../../vars').ip;
 
-
-
 exports.create = function(req, res) {
 
   console.log("API::Adding new SSH key")
