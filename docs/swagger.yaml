@@ -282,6 +282,39 @@ paths:
             example:
               - ssh-key-backups-server
               - ssh-key-restoration-server
+    post:
+      description: Add a new SSH key
+      operationId: AddSSHKey
+      consumes: application/json
+      parameters:
+        - in: body
+          name: Key
+          description: The key to create
+          schema:
+            type: object
+            required:
+              - name
+              - description
+              - privateKey
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              privateKey:
+                type: string
+            example:
+              name: "test-server-key"
+              description: "This is the key for some test server"
+              privateKey: |
+                -----BEGIN RSA PRIVATE KEY-----
+                some private key here
+                -----END RSA PRIVATE KEY-----
+      responses:
+        '200':
+           description: Key successfully added
+        '405':
+          description: Invalid input
   /gpgKeys:
     get:
       description: Get list of GPG decryption leys
@@ -299,3 +332,44 @@ paths:
             example:
               - gpg-key-backup-users
               - gpg-key-backup-products
+    post:
+      description: Add a new GPG key
+      operationId: AddGPGKey
+      consumes: application/json
+      parameters:
+        - in: body
+          name: Key
+          description: The key to create
+          schema:
+            type: object
+            required:
+              - name
+              - description
+              - username
+              - password
+              - privateKey
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+              privateKey:
+                type: string
+            example:
+              name: "test-backup-decryption-key"
+              description: "This is the key for some test backup"
+              username: admin
+              password: password
+              privateKey: |
+                -----BEGIN RSA PRIVATE KEY-----
+                some private key here
+                -----END RSA PRIVATE KEY-----
+      responses:
+        '200':
+           description: Key successfully added
+        '405':
+          description: Invalid input
