@@ -1,119 +1,114 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import 'semantic-ui-css/semantic.min.css';
+import { Button, Form, Segment } from 'semantic-ui-react'
 
-class SelectDecryptKeyOption extends React.Component {
-  render() {
-    return(
-      <option value={JSON.stringify(this.props.decryptKey.name)}>
-        {this.props.decryptKey.name}
-      </option>
-    )
-  }
-}
 
 class RunRestoreForm extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { file: '', location: '', dataType: '', decryptKey:''};
+    this.state = {
+      file: '',
+      location: '',
+      dataType: '',
+      decryptKey:'',
+    };
+    this.Change = this.handleChange.bind(this);
+    this.Click = this.handleSubmit.bind(this);
   }
-  handleFileChange (e) {
-    this.setState({file: e.target.value});
-  }
-  handleLocationChange (e) {
-    this.setState({location: e.target.value});
-  }
-  handleDataTypeChange (e) {
-    this.setState({dataType: e.target.value})
-  }
-  handleDecryptKeyChange (e) {
-    this.setState({decryptKey: e.target.value})
-  }
+
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+
   handleSubmit (e) {
     e.preventDefault();
     var file = this.state.file.trim();
     var location = this.state.location.trim();
     var dataType = this.state.dataType;
     var decryptKey = this.state.decryptKey;
-    if (!file || !location || !dataType) {
-      console.log("no data type")
+
+    console.log(
+      "\nfile: " + file +
+      "\nlocation: " + location +
+      "\ndataType: " + dataType +
+      "\ndecryptKey: " + decryptKey
+    )
+
+    if (!file || !location || !dataType || !decryptKey) {
       return;
     }
-    this.props.runHandler(location, file, dataType, decryptKey);
+    // this.props.runHandler(location, file, dataType, decryptKey);
     this.setState({file: '', location: '', dataType: '', decryptKey: ''});
   }
+
   render() {
-    var options = this.props.decryptKeys.map(function(decryptKey) {
-      return <SelectDecryptKeyOption key={decryptKey.name} decryptKey={decryptKey} />
+    var decryptKeys = this.props.decryptKeys.map(function(decryptKey) {
+      return { key: decryptKey, text: decryptKey, value: decryptKey }
     });
+    var dataTypes = [
+      {key: 'json', text: 'json', value: 'json'},
+      {key: 'mysql', text: 'mysql', value: 'mysql'}
+    ]
     return (
-      <form className="ui form">
-        <div className="field">
-          <label>Backup Location</label>
-          <input type="text"
-            className="form-control"
-            placeholder="IP or DNS"
-            value={this.state.location}
-            onChange={this.handleLocationChange.bind(this)} />
-        </div>
-        <div className="field">
-          <label>Backup File</label>
-          <input type="text"
-            className="form-control"
-            placeholder="Full Path"
-            value={this.state.file}
-            onChange={this.handleFileChange.bind(this)} />
-        </div>
-        <div className="field">
-          <label>Backup Type</label>
-          <select className='ui fluid dropdown'
-            value={this.state.dataType}
-            onChange={this.handleDataTypeChange.bind(this)}>
-            <option defaultValue >Backup Type</option>
-            <option value={"json"}>
-              json
-            </option>
-            <option value={"mysql"}>
-              mysql
-            </option>
-          </select>
-        </div>
-        <div className="field">
-          <label>Decryption Key</label>
-          <select className='ui fluid dropdown'
-            value={this.state.dataType}
-            onChange={this.handleDecryptKeyChange.bind(this)}>
-            <option defaultValue >Unencrypted</option>
-            {options}
-          </select>
-        </div>
-        <button type="submit"
-          className="ui button"
-          onClick={this.handleSubmit.bind(this)}>Run
-        </button>
-      </form>
+
+      <Segment inverted>
+        <Form inverted>
+          <Form.Group widths='equal'>
+            <Form.Input
+              fluid label='Backup Server'
+              placeholder='IP or DNS'
+              name='location'
+              value={this.state.location}
+              onChange={this.Change}/>
+            <Form.Input
+              fluid label='Backup Directory'
+              placeholder='Full Path'
+              name='file'
+              value={this.state.file}
+              onChange={this.Change}/>
+          </Form.Group>
+          <Form.Group widths='equal'>
+            <Form.Select
+              fluid label='Data Type'
+              placeholder='Select'
+              name='dataType'
+              value={this.state.dataType}
+              onChange={this.Change}
+              options={dataTypes} />
+            <Form.Select
+              fluid label='Decryption Key'
+              placeholder='Select'
+              name='decryptKey'
+              value={this.state.decryptKey}
+              onChange={this.Change}
+              options={decryptKeys} />
+          </Form.Group>
+          <Button type='submit' onClick={this.Click}>Run</Button>
+        </Form>
+      </Segment>
     )
   }
 };
 
-class Test extends React.Component {
-  handleSubmit (e) {
-    e.preventDefault();
-    this.props.runHandler();
-  }
-  render() {
-    return (
-      <form className="ui form">
-        <button type="submit"
-          className="ui button"
-          onClick={this.handleSubmit.bind(this)}>TEST Fetch Jobs
-        </button>
-      </form>
-    )
-  }
-};
 
 class Restore extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      decryptKeys: [],
+    };
+  }
+
+  componentWillMount() {
+
+    request.get('http://127.0.0.1:4000/gpgKeys/')
+    .then((res) => {
+      this.setState( {decryptKeys: JSON.parse(res.text)} );
+    })
+    .catch((err) => {
+      console.log("Error fetching keys:" + err)
+    });
+  }
+
+
 
   runJob (location,file,dataType,decryptKey) {
     request
@@ -126,29 +121,13 @@ class Restore extends Component {
         } 
       });
   }
-  getJobs () { // Just here for now as a Test
-    request.get('http://127.0.0.1:4000/schedules/')
-      .end(function(error, res){
-        if (res) {
-          console.log("Jobs:" + JSON.parse(res.text))
-        } else {
-          console.log(error );
-        }
-      });
-  }
+
   render() {
-    // Test data to ensure form works
-    var decryptKeys = 
-    [
-        {"name": "backup1-key"},
-        {"name": "backup2-key"}
-    ]
     return (
       <div className="App">
-        <Test runHandler={this.getJobs}/>
         <RunRestoreForm
           
-          decryptKeys={decryptKeys}
+          decryptKeys={this.state.decryptKeys}
           runHandler={this.runJob}
             />
       </div>

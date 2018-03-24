@@ -5,8 +5,8 @@ class App extends Component {
   render() {
     return (
       <div className="ui teal segment">
-      <h2 className="ui header">Welcome</h2>
-    </div>
+        <h2 className="ui header">Welcome</h2>
+      </div>
     );
   }
 }

@@ -20,6 +20,7 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.0",
     "semantic-ui-css": "^2.2.12",
+    "semantic-ui-react": "^0.79.0",
     "superagent": "^3.8.2",
     "swagger-ui": "^3.11.0"
   },
