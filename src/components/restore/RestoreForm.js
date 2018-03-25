@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import request from 'superagent';
-import { Button, Form, Segment } from 'semantic-ui-react'
-
+import React  from 'react';
+import { Button, Form, Segment } from 'semantic-ui-react';
 
 class RunRestoreForm extends React.Component {
   constructor(props) {
@@ -35,7 +33,7 @@ class RunRestoreForm extends React.Component {
     if (!file || !location || !dataType || !decryptKey) {
       return;
     }
-    // this.props.runHandler(location, file, dataType, decryptKey);
+    this.props.runHandler(location, file, dataType, decryptKey);
     this.setState({file: '', location: '', dataType: '', decryptKey: ''});
   }
 
@@ -49,8 +47,8 @@ class RunRestoreForm extends React.Component {
     ]
     return (
 
-      <Segment inverted>
-        <Form inverted>
+      <Segment inverted color={'blue'}>
+        <Form inverted color={'blue'}>
           <Form.Group widths='equal'>
             <Form.Input
               fluid label='Backup Server'
@@ -88,51 +86,4 @@ class RunRestoreForm extends React.Component {
   }
 };
 
-
-class Restore extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      decryptKeys: [],
-    };
-  }
-
-  componentWillMount() {
-
-    request.get('http://127.0.0.1:4000/gpgKeys/')
-    .then((res) => {
-      this.setState( {decryptKeys: JSON.parse(res.text)} );
-    })
-    .catch((err) => {
-      console.log("Error fetching keys:" + err)
-    });
-  }
-
-
-
-  runJob (location,file,dataType,decryptKey) {
-    request
-      .post('http://127.0.0.1:4000/restores/')
-      .send({location: location, file: file, dataType: dataType, decryptKey: decryptKey})
-      .set('Content-Type', 'application/json')
-      .end(function(err, res) {
-        if (err || !res.ok) {
-          alert('Error Triggering Job');
-        } 
-      });
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <RunRestoreForm
-          
-          decryptKeys={this.state.decryptKeys}
-          runHandler={this.runJob}
-            />
-      </div>
-    );
-  }
-}
-
-export default Restore;
+export default RunRestoreForm;

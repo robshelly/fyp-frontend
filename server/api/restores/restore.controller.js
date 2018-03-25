@@ -13,8 +13,7 @@ exports.getResults = function(req, res) {
 
     var results = [];
     var onComplete = function() {
-      console.log("\tSuccess")
-      res.json(results)
+      res.json(results.sort(function(a, b){return b.timestamp - a.timestamp}))
     };
 
     var keys = Object.keys(buildNumbers)
@@ -29,11 +28,35 @@ exports.getResults = function(req, res) {
         // Do api call
         jenkins.build.get('auto-pipeline-backup-restoration', buildNumbers[key], function(err, data) {
           if (err) throw err;
+
+          // Need to get to following details out of the response
+          var id, timestamp, result, server, file
+          id = data.id
+          timestamp = data.timestamp/1000
+          result = data.result
+
+          // Getting params is more difficult as they are in nested arrays
+          var params = data.actions.find(function(action) {
+            if (action.hasOwnProperty('parameters'))
+              return action
+          }).parameters
+          
+          for (var i = 0; i < params.length; i++) {
+            if (params[i].name == 'backupIp')
+              server = params[i].value
+            if (params[i].name == 'backupFile')
+              file = params[i].value
+          }
+
+          // Push to results
           results.push({
-            id: data.id,
-            timestamp: data.timestamp,
-            result: data.result
+            id: id,
+            timestamp: timestamp,
+            result: result,
+            server: server,
+            file: file
           });
+
           if (--tasksToGo === 0) {
             // No tasks left, good to go
             onComplete();
@@ -56,14 +79,11 @@ exports.runRestore = function(req, res) {
       "\tData Type: " + req.body.dataType + "\n" +
       "\tDecryption Key: " + req.body.decryptKey)
 
-  // TODO Uncomment
-  // Commentes out now for testing
   jenkins.job.build(
-    { name: 'backup-restoration-pipeline', 
+    { name: 'auto-pipeline-backup-restoration', 
       parameters: { 
-        backupIpAddress: req.body.location,
-        backup: req.body.file,
-        dbIpAddress: '34.244.138.102'
+        backupIp: req.body.location,
+        backupFile: req.body.file
       }
     },
     function(err) {

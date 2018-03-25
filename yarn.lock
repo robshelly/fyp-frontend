@@ -5576,6 +5576,10 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdi
   dependencies:
     minimist "0.0.8"
 
+moment@^2.21.0:
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
+
 morgan@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.0.1.tgz#8250a5d711de625453022945344d4d6762630c64"
@@ -6900,6 +6904,10 @@ react-markdown@^2.5.0:
     commonmark "^0.24.0"
     commonmark-react-renderer "^4.3.4"
     prop-types "^15.5.1"
+
+react-moment@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-moment/-/react-moment-0.7.0.tgz#9ccb5c87be683d08c253b48469167443f09c3d89"
 
 react-motion@^0.5.2:
   version "0.5.2"

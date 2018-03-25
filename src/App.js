@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 
 import Home from './components/Home'
-import Restore from './components/Restore'
+import Restore from './components/restore/Restore'
 import Docs from './components/Docs'
 
 import { Header, Segment } from 'semantic-ui-react'
