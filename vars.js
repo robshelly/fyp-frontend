@@ -1,5 +1,5 @@
 //Using two different Jenkins API node wrappers because they each do some jobs better
-var ip = "34.245.60.208"
+var ip = "52.30.150.73"
 
 let jenkins = require('jenkins')({ baseUrl: 'http://admin:cloudTech2017@' + ip + ':8080', crumbIssuer: false });
 

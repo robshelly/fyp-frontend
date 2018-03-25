@@ -35,7 +35,6 @@ class Restore extends React.Component {
 
     request.get('http://127.0.0.1:4000/restores/')
     .then((res) => {
-      console.log(res.text)
       this.setState( {restoreResults: JSON.parse(res.text)} );
     })
     .catch((err) => {
@@ -44,16 +43,33 @@ class Restore extends React.Component {
 
   }
 
-  runJob (location,file,dataType,decryptKey) {
+  runJob (server,file,dataType,decryptKey) {
+
+    console.log(
+      "Server: " + server + "\n" + 
+      "File: " + file + "\n" + 
+      "Type: " + dataType + "\n" + 
+      "Key: " + decryptKey
+    )
+    
+    var self = this;
+
     request
       .post('http://127.0.0.1:4000/restores/')
-      .send({location: location, file: file, dataType: dataType, decryptKey: decryptKey})
+      .send({server: server, file: file, dataType: dataType, decryptKey: decryptKey})
       .set('Content-Type', 'application/json')
-      .then(function(res) {
-          console.log(res)
-          this.fetchResults()
+      .then((res) => {
+        var newResults = this.state.restoreResults
+        newResults.unshift({
+          id: (parseInt(newResults[0].id, 10) + 1).toString(),
+          timestamp: null,
+          result: null,
+          server: server,
+          file: file
+        })
+        self.setState({restoreResults: newResults})
       })
-      .catch(function(err) {
+      .catch((err) => {
           console.log(err)
       });
   }
@@ -63,7 +79,7 @@ class Restore extends React.Component {
       <div>
         <RunRestoreForm
           decryptKeys={this.state.decryptKeys}
-          runHandler={this.runJob}
+          runHandler={this.runJob.bind(this)}
           />
         <RestoreResults 
           results={this.state.restoreResults}

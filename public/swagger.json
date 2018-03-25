@@ -40,6 +40,12 @@
                   },
                   "result": {
                     "type": "string"
+                  },
+                  "server": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string"
                   }
                 }
               },
@@ -47,12 +53,16 @@
                 {
                   "id": "1",
                   "timestamp": 1520114032,
-                  "result": "SUCCESS"
+                  "result": "SUCCESS",
+                  "server": "34.240.194.20",
+                  "file": "backups.backup.json.gpg"
                 },
                 {
                   "id": "2",
                   "timestamp": 1520114255,
-                  "result": "FAILURE"
+                  "result": "FAILURE",
+                  "server": "ec2-34-240-194-20.eu-west-1.compute.amazonaws.com",
+                  "file": "backups/backup.sql.gpg"
                 }
               ]
             }
@@ -72,13 +82,13 @@
             "schema": {
               "type": "object",
               "required": [
-                "location",
+                "server",
                 "file",
                 "dataType",
                 "decryptKey"
               ],
               "properties": {
-                "location": {
+                "server": {
                   "type": "string"
                 },
                 "file": {
@@ -92,7 +102,7 @@
                 }
               },
               "example": {
-                "location": "192.168.1.99",
+                "server": "192.168.1.99",
                 "file": "/backup/backup.json.gpg",
                 "dataType": "json",
                 "decryptKey": "backupKey1"
@@ -167,8 +177,8 @@
               "type": "object",
               "required": [
                 "name",
-                "location",
-                "file",
+                "server",
+                "pathToFile",
                 "dataType",
                 "decryptKey",
                 "frequency"
@@ -177,10 +187,10 @@
                 "name": {
                   "type": "string"
                 },
-                "location": {
+                "server": {
                   "type": "string"
                 },
-                "file": {
+                "pathToFile": {
                   "type": "string"
                 },
                 "dataType": {
@@ -192,8 +202,8 @@
               },
               "example": {
                 "name": "backup-one",
-                "location": "192.168.1.99",
-                "file": "backup/backup.json.gpg",
+                "server": "192.168.1.99",
+                "pathToFile": "backup/backup.json.gpg",
                 "dataType": "json",
                 "decryptKey": "backupKey1",
                 "frequency": "0 0 * * 7"

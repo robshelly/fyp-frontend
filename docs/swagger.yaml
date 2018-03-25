@@ -32,13 +32,21 @@ paths:
                   type: integer
                 result:
                   type: string
+                server:
+                  type: string
+                file:
+                  type: string
             example:
               - id: "1"
                 timestamp: 1520114032
-                result: SUCCESS 
+                result: SUCCESS
+                server: 34.240.194.20
+                file: backups.backup.json.gpg
               - id: "2"
                 timestamp: 1520114255
                 result: FAILURE
+                server: ec2-34-240-194-20.eu-west-1.compute.amazonaws.com
+                file: backups/backup.sql.gpg
     post:
       description: Run a backup test restoration
       summary: Run Restore
@@ -51,12 +59,12 @@ paths:
           schema:
             type: object
             required:
-              - location
+              - server
               - file
               - dataType
               - decryptKey
             properties:
-              location:
+              server:
                 type: string
               file:
                 type: string
@@ -65,7 +73,7 @@ paths:
               decryptKey:
                 type: string
             example:
-              location: "192.168.1.99"
+              server: "192.168.1.99"
               file: "/backup/backup.json.gpg"
               dataType: "json"
               decryptKey: "backupKey1"
@@ -115,17 +123,17 @@ paths:
             type: object
             required:
               - name
-              - location
-              - file
+              - server
+              - pathToFile
               - dataType
               - decryptKey
               - frequency
             properties:
               name:
                 type: string
-              location:
+              server:
                 type: string
-              file:
+              pathToFile:
                 type: string
               dataType:
                 type: string
@@ -133,8 +141,8 @@ paths:
                 type: string
             example:
               name: "backup-one"
-              location: "192.168.1.99"
-              file: "backup/backup.json.gpg"
+              server: "192.168.1.99"
+              pathToFile: "backup/backup.json.gpg"
               dataType: "json"
               decryptKey: "backupKey1"
               frequency: "0 0 * * 7"

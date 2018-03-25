@@ -2,18 +2,21 @@ import React  from 'react';
 import { Button, Form, Segment, Grid } from 'semantic-ui-react';
 
 const initialState = {
+  name: '',
   server: '',
-  file: '',
+  pathToFile: '',
   dataType: '',
   decryptKey:'',
+  frequency: '',
+  nameRequiredWarning: false,
   serverRequiredWarning: false,
   pathRequiredWarning: false,
   dataTypeRequiredWarning: false,
   decryptKeyRequiredWarning: false,
+  frequencyRequiredWarning: false
 }
-  
 
-class RunRestoreForm extends React.Component {
+class ScheduleRestoreForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = initialState;
@@ -22,38 +25,44 @@ class RunRestoreForm extends React.Component {
   }
 
   handleChange = (event, {name, value}) => {
+    console.log("Change")
     var warningKey = name + 'RequiredWarning'
     this.setState({ [warningKey]: false })
     this.setState({ [name]: value })
   }
 
   handleSubmit (e) {
+
     e.preventDefault();
+    var name = this.state.name.trim();
     var server = this.state.server.trim();
-    var file = this.state.file.trim();
+    var pathToFile = this.state.pathToFile.trim();
     var dataType = this.state.dataType;
     var decryptKey = this.state.decryptKey;
+    var frequency = this.state.frequency.trim();
 
     // If any fields are blank, set a warning and return
+    if (!name) this.setState({nameRequiredWarning: true});
     if (!server) this.setState({serverRequiredWarning: true});
-    if (!file) this.setState({fileRequiredWarning: true});
+    if (!pathToFile) this.setState({pathRequiredWarning: true});
     if (!dataType) this.setState({dataTypeRequiredWarning: true});
     if (!decryptKey) this.setState({decryptKeyRequiredWarning: true});
-    if (!server || !file || !dataType || !decryptKey) {
+    if (!frequency) this.setState({frequencyRequiredWarning: true});
+    if (!name || !server || !pathToFile || !dataType || !decryptKey || !frequency) {
       return;
     }
 
-    this.props.runHandler(server, file, dataType, decryptKey);
+    this.props.runHandler(name, server, pathToFile, dataType, decryptKey, frequency);
     this.setState(initialState);
   }
 
   render() {
+    console.log("Rendering")
     var decryptKeys = this.props.decryptKeys.map(function(decryptKey) {
       return { key: decryptKey, text: decryptKey, value: decryptKey }
     });
     var dataTypes = [
-      {key: 'json', text: 'json', value: 'json'},
-      {key: 'mysql', text: 'mysql', value: 'mysql'}
+      {key: 'json', text: 'json', value: 'json'}
     ]
     return (
 
@@ -63,7 +72,16 @@ class RunRestoreForm extends React.Component {
           <Grid>
             <Grid.Row>
             <Grid.Column mobile={16} tablet={8} computer={4}>
-
+              <Form.Input
+                required={this.state.nameRequiredWarning}
+                error={this.state.nameRequiredWarning}
+                fluid label='Name'
+                placeholder='Name the restoration schedule'
+                name='name'
+                value={this.state.name}
+                onChange={this.Change}/>
+            </Grid.Column>
+            <Grid.Column mobile={16} tablet={8} computer={4}>
               <Form.Input
                 required={this.state.serverRequiredWarning}
                 error={this.state.serverRequiredWarning}
@@ -75,12 +93,12 @@ class RunRestoreForm extends React.Component {
             </Grid.Column>
             <Grid.Column mobile={16} tablet={8} computer={4}>
               <Form.Input
-                required={this.state.fileRequiredWarning}
-                error={this.state.fileRequiredWarning}
-                fluid label='Backup File'
+                required={this.state.pathRequiredWarning}
+                error={this.state.pathRequiredWarning}
+                fluid label='Path to Files'
                 placeholder='Full Path'
-                name='file'
-                value={this.state.file}
+                name='pathToFile'
+                value={this.state.pathToFile}
                 onChange={this.Change}/>
             </Grid.Column>
             <Grid.Column mobile={16} tablet={8} computer={4}>
@@ -105,6 +123,16 @@ class RunRestoreForm extends React.Component {
                 onChange={this.Change}
                 options={decryptKeys} />
             </Grid.Column>
+            <Grid.Column mobile={16} tablet={8} computer={4}>
+              <Form.Input
+                required={this.state.frequencyRequiredWarning}
+                error={this.state.frequencyRequiredWarning}
+                fluid label='Frequency'
+                placeholder='* * * * *'
+                name='frequency'
+                value={this.state.frequency}
+                onChange={this.Change}/>
+            </Grid.Column>
             </Grid.Row>
             <Grid.Row>
               <Grid.Column>
@@ -114,8 +142,9 @@ class RunRestoreForm extends React.Component {
           </Grid>
         </Form>
       </Segment>
-    )
+    );
   }
-};
 
-export default RunRestoreForm;
+}
+
+export default ScheduleRestoreForm;

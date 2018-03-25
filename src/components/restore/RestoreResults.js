@@ -29,6 +29,20 @@ function Result(props) {
   )
 }
 
+function Time(props) {
+  if (props.timestamp === null )
+    return (
+      <Table.Cell>
+        "Just Now"
+    </Table.Cell>
+    )
+  else return (
+    <Table.Cell>
+      <Moment format="ddd, MMM Do YYYY @ HH:mm:ss" unix>{props.timestamp}</Moment>
+    </Table.Cell>
+  )
+}
+
 
 class RestoreResultsItem extends React.Component {
   render() {
@@ -40,9 +54,7 @@ class RestoreResultsItem extends React.Component {
         <Table.Cell>
         {this.props.result.file}
         </Table.Cell>
-        <Table.Cell>
-          <Moment format="ddd, MMM Do YYYY @ HH:mm:ss" unix>{this.props.result.timestamp}</Moment>
-        </Table.Cell>
+        <Time timestamp={this.props.result.timestamp} />
         <Result result={this.props.result.result} />
       </Table.Row>
     )

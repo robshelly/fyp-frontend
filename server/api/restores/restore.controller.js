@@ -74,7 +74,7 @@ exports.runRestore = function(req, res) {
 
   console.log("API::Running Job")
   console.log(
-      "\tLocation: " + req.body.location + "\n" +
+      "\tServer: " + req.body.server + "\n" +
       "\tFile: "+ req.body.file + "\n" +
       "\tData Type: " + req.body.dataType + "\n" +
       "\tDecryption Key: " + req.body.decryptKey)
@@ -82,7 +82,7 @@ exports.runRestore = function(req, res) {
   jenkins.job.build(
     { name: 'auto-pipeline-backup-restoration', 
       parameters: { 
-        backupIp: req.body.location,
+        backupIp: req.body.server,
         backupFile: req.body.file
       }
     },

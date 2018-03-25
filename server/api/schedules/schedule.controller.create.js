@@ -5,8 +5,8 @@ exports.create = function(req, res) {
   console.log("API::Creating Scheduled Restore")
   console.log(
     "\tName: " + req.body.name + "\n" +
-    "\tLocation: " + req.body.location + "\n" +
-    "\tFile: "+ req.body.file + "\n" +
+    "\tLocation: " + req.body.server + "\n" +
+    "\tFile: "+ req.body.pathToFile + "\n" +
     "\tData Type: " + req.body.dataType + "\n" +
     "\tDecryption Key: " + req.body.decryptKey + "\n" +
     "\tFrequency: " + req.body.frequency)
@@ -33,8 +33,8 @@ exports.create = function(req, res) {
         </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       </properties>
       <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.41">
-        <script>def backupIp = "${req.body.location}";
-        def backupFile = "${req.body.file}";
+        <script>def backupIp = "${req.body.server}";
+        def backupFile = "${req.body.pathToFile}";
         def dataType = "${req.body.dataType}";
         def decryptKey = "${req.body.decryptKey}";
     

@@ -3,7 +3,8 @@ import { Switch, Route } from 'react-router-dom'
 
 import Home from './components/Home'
 import Restore from './components/restore/Restore'
-import Docs from './components/Docs'
+import Docs from './components/docs/Docs'
+import Schedule from './components/schedule/Schedule'
 
 import { Header, Segment } from 'semantic-ui-react'
 
@@ -27,6 +28,7 @@ class Main extends Component {
         <Switch>
           <Route exact path='/' component={Home}/>
           <Route path='/restore' component={Restore}/>
+          <Route path='/schedule' component={Schedule}/>
           <Route path='/docs' component={Docs}/>
         </Switch>
       </div>
