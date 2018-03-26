@@ -6,6 +6,9 @@ exports.getScheduledRestores = require("./schedule.controller.all.js").getAll
 // Get a single scheduled restore
 exports.getScheduledRestore = require("./schedule.controller.get.js").get
 
+// Run a scheduled restore now
+exports.runScheduledRestore = require("./schedule.controller.run.js").run
+
 // Create scheduled restore
 exports.createScheduledRestore = require("./schedule.controller.create.js").create
 

@@ -104,10 +104,10 @@ paths:
                 lastResult:
                   type: string
             example:
-              - id: "scheduled-backup-one"
+              - name: "scheduled-backup-one"
                 lastRun: 1520114032
                 lastResult: SUCCESS 
-              - id: "scheduled-backup-two"
+              - name: "scheduled-backup-two"
                 lastRun: 1520114255
                 lastResult: FAILURE
     post:
@@ -210,6 +210,23 @@ paths:
                 result: FAILURE
         "404":
           description: Schedule not found
+    post:
+      description: Run a scheduled restore immedialtely
+      summary: Run Scheduled now
+      operationId: RunScheduledRestore
+      consumes: application/json
+      parameters:
+        - name: scheduleName
+          in: path
+          description: The name schedule to run
+          required: true
+          type: string
+          example: users-backup
+      responses:
+        '200':
+           description: The restoration was successfully triggered
+        '404':
+          description: Scheduled restore not found
     put:
       description: Update an existing scheduled restoration
       summary:  Update Schedule

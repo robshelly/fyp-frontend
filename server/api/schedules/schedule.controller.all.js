@@ -9,10 +9,9 @@ exports.getAll = function(req, res) {
     // Creates list of scheduled jobs
     var schedules = data.jobs.filter(function (e){
       if (e.name.includes('schedule')) return e.name
-      // if (e.name.includes('api')) return (e.name)
-      // return e.name.includes('api');
     })
 
+    // Get details for each job returned
     var results = [];
     var onComplete = function() {
       console.log("\tSuccess")
@@ -32,12 +31,12 @@ exports.getAll = function(req, res) {
           if (err) throw err;
 
           // Get results of last build
-          jenkins.build.get('auto-pipeline-backup-restoration', 30, function(err, data) {
+          jenkins.build.get(job.fullName, job.lastBuild.number, function(err, data) {
             if (err) throw err;
             // console.log(JSON.stringify(data));
             results.push({
               name: job.displayName,
-              lastRun: data.timestamp,
+              lastRun: data.timestamp/1000,
               lastResult: data.result
             });
             if (--tasksToGo === 0) {

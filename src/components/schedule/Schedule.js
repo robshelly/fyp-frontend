@@ -2,18 +2,34 @@ import React from 'react';
 import request from 'superagent';
 
 import ScheduleRestoreForm from './ScheduleRestoreForm'
+import ScheduleList from  './ScheduleList'
 
 
 class Schedule extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      decryptKeys: []
+      decryptKeys: [],
+      schedules: []
     };
   }
 
   componentWillMount() {
     this.fetchKeys();
+    this.fetchSchedules();
+  }
+
+  fetchSchedules() {
+
+    request.get('http://127.0.0.1:4000/schedules/')
+    .then((res) => {
+      console.log(res.text)
+      this.setState( {schedules: JSON.parse(res.text)} );
+    })
+    .catch((err) => {
+      console.log("Error fetching schedules:" + err)
+    });
+
   }
 
 
@@ -26,6 +42,22 @@ class Schedule extends React.Component {
     .catch((err) => {
       console.log("Error fetching keys:" + err)
     });
+
+  }
+
+  runSchedule(name) {
+    console.log("Running Scheduled Restore Now: " + name)
+    
+    request
+      .post('http://127.0.0.1:4000/schedules/' + name)
+      .then((res) => {
+        console.log("Restore triggered")
+      })
+      .catch((err) => {
+        console.log("Error fetching keys:" + err)
+      });
+
+
 
   }
 
@@ -68,6 +100,9 @@ class Schedule extends React.Component {
           decryptKeys={this.state.decryptKeys}
           runHandler={this.scheduleRestore}
           />
+        <ScheduleList
+          runHandler={this.runSchedule}
+          schedules={this.state.schedules} />
       </div>
     )
   }

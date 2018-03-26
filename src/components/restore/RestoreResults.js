@@ -34,7 +34,7 @@ function Time(props) {
     return (
       <Table.Cell>
         "Just Now"
-    </Table.Cell>
+      </Table.Cell>
     )
   else return (
     <Table.Cell>
