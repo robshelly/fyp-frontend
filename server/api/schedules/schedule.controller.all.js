@@ -3,7 +3,7 @@ var jenkins = require('../../../vars').jenkins;
 exports.getAll = function(req, res) {
   console.log("API::Fetching schedules restores")
 
-    jenkins.info(function(err, data) {
+    jenkins.info().then((data) => {
 
 
     // Creates list of scheduled jobs
@@ -14,7 +14,6 @@ exports.getAll = function(req, res) {
     // Get details for each job returned
     var results = [];
     var onComplete = function() {
-      console.log("\tSuccess")
       res.json(results)
     };
 
@@ -24,29 +23,36 @@ exports.getAll = function(req, res) {
     if (tasksToGo === 0) {
       onComplete();
     } else {
-      keys.forEach(function(key) {
+      keys.forEach((key) => {
     
         // Get job details, including last build number
-        jenkins.job.get(schedules[key], function(err, job) {
-          if (err) throw err;
+        jenkins.job.get(schedules[key]).then((job) => {
 
-          // Get results of last build
-          jenkins.build.get(job.fullName, job.lastBuild.number, function(err, data) {
-            if (err) throw err;
-            // console.log(JSON.stringify(data));
+          // Get results of last build only if job has been built
+          if (job.lastBuild) {
+            jenkins.build.get(job.fullName, job.lastBuild.number).then((data) => {
+              results.push({
+                name: job.displayName,
+                lastRun: data.timestamp/1000,
+                lastResult: data.result
+              });
+              // If all async call complete... return
+              if (--tasksToGo === 0) {onComplete()}
+
+            }).catch((err) => { console.log("Error: ", err) });
+          } else {
             results.push({
               name: job.displayName,
-              lastRun: data.timestamp/1000,
-              lastResult: data.result
+              lastRun: null,
+              lastResult: null
             });
-            if (--tasksToGo === 0) {
-              // No tasks left, good to go
-              onComplete();
-            }
-          });
-        });
-      });
-    }
+            // If all async call complete... return
+            if (--tasksToGo === 0) {onComplete()}
+          }
 
-  });
+        }).catch((err) => { console.log("Error: ", err) });
+      })
+    }
+  }).catch((err) => { console.log("Error: ", err) });
+
 }
