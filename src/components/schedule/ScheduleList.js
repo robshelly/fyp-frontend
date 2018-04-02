@@ -1,6 +1,8 @@
 import React from 'react';
 import { Header, Segment, Grid, Icon, Message, Button } from 'semantic-ui-react';
 import Moment from 'react-moment';
+import { Link } from 'react-router-dom';
+import buttons from '../../config/buttonConfig';
 
 function Result(props) {
   if (props.result === "SUCCESS" )
@@ -33,6 +35,11 @@ function Result(props) {
         </Message>
       </Grid.Column>
     )
+    if (props.result === 'NONE' )
+      return (
+        <Grid.Column>
+        </Grid.Column>
+      )
   return (
     <Grid.Column >
       <Message warning>
@@ -45,16 +52,22 @@ function Result(props) {
 }
 
 function Time(props) {
-  if (props.lastRun === null )
+  if (props.lastRun === "NONE" )
     return (
       <Grid.Column>
-        "Just Now"
+        <Header as={'h4'}>Never</Header>
+      </Grid.Column>
+    )
+  else if (props.lastRun === null )
+    return (
+      <Grid.Column>
+        <Header as={'h4'}>Just Now</Header>
       </Grid.Column>
     )
   else return (
     <Grid.Column>
       <Header as={'h4'}>
-        <Moment format="ddd, MMM Do YYYY @ HH:mm:ss" unix>{props.timestamp}</Moment>
+        <Moment format="ddd, MMM Do YYYY @ HH:mm:ss" unix>{props.lastRun}</Moment>
       </Header>
     </Grid.Column>
   )
@@ -63,28 +76,65 @@ function Time(props) {
 class Schedule extends React.Component {
   constructor(props) {
     super(props)
-    this.Click = this.handleClick.bind(this)
+    this.state = { status: 'listNormal' }
+    // this.runHandler = this.props.runHandler.bind(this)
   }
 
-  handleClick(e) {
-    e.preventDefault();
+  handleDelete = () => {
+    this.setState({status: 'del'})
+  }
+
+  handleConfirm = () => {
+    this.props.deleteHandler(this.props.schedule.name)
+  }
+
+  handleCancel = () => {
+    this.setState({status: 'listNormal'});
+  }
+
+  handleRun = () => {
+    this.setState({ status : 'run'} )
+  }
+
+  handleStart= () => {
     this.props.runHandler(this.props.schedule.name);
+    this.setState({status: 'listNormal'});
   }
 
   render() {
+    var activeButtons = buttons.listNormal;
+    var leftButtonHandler = this.handleRun;
+    var rightButtonHandler = this.handleDelete;
+    if (this.state.status === 'run' ) {
+      activeButtons = buttons.run ;
+      leftButtonHandler = this.handleCancel;
+      rightButtonHandler = this.handleStart;
+    } else if (this.state.status === 'del' ) {
+      activeButtons = buttons.delete ;
+      leftButtonHandler = this.handleConfirm;
+      rightButtonHandler = this.handleCancel;
+    }
     return (
       <Segment color={'green'}>
         <Grid stackable columns={4}>
           <Grid.Column>
-            <Header as={'h4'}>{this.props.schedule.name}</Header>
+            <Header as={'h4'}>
+            <Link to={'/schedules/' + this.props.schedule.name}> {this.props.schedule.name} </Link>
+            </Header>
           </Grid.Column>
-          <Time timestamp={this.props.schedule.lastRun} />
+          <Time lastRun={this.props.schedule.lastRun} />
           <Result result={this.props.schedule.lastResult} />
           <Grid.Column>
-            <Button 
-              color={'red'}
-              onClick={this.Click}> 
-              Run Now </Button>
+            <Button
+              color={activeButtons.leftButtonColor}
+              onClick={leftButtonHandler}
+              >{activeButtons.leftButtonVal}
+            </Button>
+            <Button
+              color={activeButtons.rightButtonColor}
+              onClick={rightButtonHandler}
+              >{activeButtons.rightButtonVal}
+            </Button>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -95,7 +145,12 @@ class Schedule extends React.Component {
 class ScheduleList extends React.Component {
   render() {
     var schedules = this.props.schedules.map(function(schedule) {
-      return <Schedule key={schedule.name} schedule={schedule} runHandler={this.props.runHandler} />
+      return <Schedule
+        key={schedule.name}
+        schedule={schedule}
+        runHandler={this.props.runHandler}
+        deleteHandler={this.props.deleteHandler}
+      />
     }.bind(this));
     return (
       <div>

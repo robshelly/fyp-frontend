@@ -83,7 +83,9 @@ exports.runRestore = function(req, res) {
     { name: 'auto-pipeline-backup-restoration', 
       parameters: { 
         backupIp: req.body.server,
-        backupFile: req.body.file
+        backupFile: req.body.file,
+        dataType: req.body.dataType,
+        decryptKey: req.body.decryptKey
       }
     },
     function(err) {

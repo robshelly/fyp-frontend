@@ -43,25 +43,19 @@ class Restore extends React.Component {
 
   }
 
-  runJob (server,file,dataType,decryptKey) {
-
-    console.log(
-      "Server: " + server + "\n" + 
-      "File: " + file + "\n" + 
-      "Type: " + dataType + "\n" + 
-      "Key: " + decryptKey
-    )
+  runJob(server,file,dataType,decryptKey) {
+    console.log("Running job")
     
     var self = this;
-
     request
       .post('http://127.0.0.1:4000/restores/')
       .send({server: server, file: file, dataType: dataType, decryptKey: decryptKey})
       .set('Content-Type', 'application/json')
       .then((res) => {
         var newResults = this.state.restoreResults
+        var id = newResults.length === 0 ? 1 : (parseInt(newResults[0].id, 10) + 1).toString()
         newResults.unshift({
-          id: (parseInt(newResults[0].id, 10) + 1).toString(),
+          id: id,
           timestamp: null,
           result: null,
           server: server,
@@ -77,6 +71,7 @@ class Restore extends React.Component {
   render() {
     return (
       <div>
+        <h2> Restorations </h2>
         <RunRestoreForm
           decryptKeys={this.state.decryptKeys}
           runHandler={this.runJob.bind(this)}

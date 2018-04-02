@@ -153,7 +153,7 @@ paths:
           description: Invalid input
   /schedules/{scheduleName}:
     get:
-      description: Get detail of a scheduled restore
+      description: Get details of a scheduled restore
       summary: Get Schedule
       operationId: GetSchedule
       produces:
@@ -173,9 +173,9 @@ paths:
           properties:
             name:
               type: string
-            location:
+            server:
               type: string
-            fail:
+            pathToFile:
               type: string
             dataType:
               type: string
@@ -196,8 +196,8 @@ paths:
                     type: string
           example:
             name: "backup-one"
-            location: "192.168.1.99"
-            file: "backup/backup.json.gpg"
+            server: "192.168.1.99"
+            pathToFile: "backup/backup.json.gpg"
             dataType: "json"
             decryptKey: "backupKey1"
             frequency: "0 0 * * 7"
@@ -305,8 +305,8 @@ paths:
             items:
               type: string
             example:
-              - ssh-key-backups-server
-              - ssh-key-restoration-server
+              - backups-server
+              - restoration-server
     post:
       description: Add a new SSH key
       operationId: AddSSHKey
@@ -372,8 +372,8 @@ paths:
             items:
               type: string
             example:
-              - gpg-key-backup-users
-              - gpg-key-backup-products
+              - backup-users
+              - backup-products
     post:
       description: Add a new GPG key
       operationId: AddGPGKey

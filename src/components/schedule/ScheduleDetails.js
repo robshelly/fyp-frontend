@@ -1,27 +1,35 @@
 import React  from 'react';
-import { Button, Form, Segment, Grid } from 'semantic-ui-react';
+import { Segment, Grid, Form, Button, Header } from 'semantic-ui-react';
+import buttons from '../../config/buttonConfig';
 
-const initialState = {
-  name: '',
-  server: '',
-  pathToFile: '',
-  dataType: '',
-  decryptKey:'',
-  frequency: '',
-  nameRequiredWarning: false,
-  serverRequiredWarning: false,
-  pathRequiredWarning: false,
-  dataTypeRequiredWarning: false,
-  decryptKeyRequiredWarning: false,
-  frequencyRequiredWarning: false
-}
-
-class ScheduleRestoreForm extends React.Component {
+class DetailsForm extends React.Component {
   constructor(props) {
     super(props)
-    this.state = initialState;
+    this.state = this.getInitialState(this.props.schedule)
     this.Change = this.handleChange.bind(this);
-    this.Click = this.handleSubmit.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(JSON.stringify(this.props.schedule) !== JSON.stringify(nextProps.schedule))
+    {
+      this.setState(this.getInitialState(nextProps.schedule));
+    }
+  } 
+
+  getInitialState = (schedule) => {
+    return {
+      status: 'singleNormal',
+      server: schedule.server,
+      pathToFile: schedule.pathToFile,
+      dataType: schedule.dataType,
+      decryptKey: schedule.decryptKey,
+      frequency: schedule.frequency,
+      serverRequiredWarning: false,
+      pathRequiredWarning: false,
+      dataTypeRequiredWarning: false,
+      decryptKeyRequiredWarning: false,
+      frequencyRequiredWarning: false
+    }
   }
 
   handleChange = (event, {name, value}) => {
@@ -30,29 +38,42 @@ class ScheduleRestoreForm extends React.Component {
     this.setState({ [name]: value })
   }
 
-  handleSubmit (e) {
+  handleEdit = () => {
+    this.setState({ status : 'edit'} )
+  }
 
-    e.preventDefault();
-    var name = this.state.name.trim();
+  handleCancel = () => {
+    this.setState(this.getInitialState(this.props.schedule));
+  }
+
+  handleRun = () => {
+    this.setState({ status : 'run'} )
+  }
+
+  handleStart = () => {
+    this.props.runHandler(this.props.schedule.name);
+  }
+
+  handleSave = (e) => {
     var server = this.state.server.trim();
     var pathToFile = this.state.pathToFile.trim();
     var dataType = this.state.dataType;
     var decryptKey = this.state.decryptKey;
     var frequency = this.state.frequency.trim();
 
+    e.preventDefault();
+
     // If any fields are blank, set a warning and return
-    if (!name) this.setState({nameRequiredWarning: true});
     if (!server) this.setState({serverRequiredWarning: true});
     if (!pathToFile) this.setState({pathRequiredWarning: true});
     if (!dataType) this.setState({dataTypeRequiredWarning: true});
     if (!decryptKey) this.setState({decryptKeyRequiredWarning: true});
     if (!frequency) this.setState({frequencyRequiredWarning: true});
-    if (!name || !server || !pathToFile || !dataType || !decryptKey || !frequency) {
+    if (!server || !pathToFile || !dataType || !decryptKey || !frequency) {
       return;
     }
 
-    this.props.runHandler(name, server, pathToFile, dataType, decryptKey, frequency);
-    this.setState(initialState);
+    this.props.updateHandler(this.props.schedule.name, server, pathToFile, dataType, decryptKey, frequency);
   }
 
   render() {
@@ -62,23 +83,24 @@ class ScheduleRestoreForm extends React.Component {
     var dataTypes = [
       {key: 'json', text: 'json', value: 'json'}
     ]
+    var activeButtons = buttons.singleNormal;
+    var leftButtonHandler = this.handleRun;
+    var rightButtonHandler = this.handleEdit;
+    if (this.state.status === 'run' ) {
+      activeButtons = buttons.run ;
+      leftButtonHandler = this.handleCancel;
+      rightButtonHandler = this.handleStart;
+    } else if (this.state.status === 'edit' ) {
+      activeButtons = buttons.edit ;
+      leftButtonHandler = this.handleSave;
+      rightButtonHandler = this.handleCancel;
+    }
     return (
-
       <Segment inverted color={'blue'}>
         <Form inverted color={'blue'}>
           {/* Using Grid inside Form allows for nicer adaptive fields sizing different screen sizes */}
           <Grid>
             <Grid.Row>
-            <Grid.Column mobile={16} tablet={8} computer={4}>
-              <Form.Input
-                required={this.state.nameRequiredWarning}
-                error={this.state.nameRequiredWarning}
-                fluid label='Name'
-                placeholder='Name the restoration schedule'
-                name='name'
-                value={this.state.name}
-                onChange={this.Change}/>
-            </Grid.Column>
             <Grid.Column mobile={16} tablet={8} computer={4}>
               <Form.Input
                 required={this.state.serverRequiredWarning}
@@ -133,8 +155,19 @@ class ScheduleRestoreForm extends React.Component {
             </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-              <Grid.Column>
-                <Button type='submit' onClick={this.Click}>Submit</Button>
+              <Grid.Column mobile={16} tablet={8} computer={4}>
+                <Button
+                  color={activeButtons.leftButtonColor}
+                  onClick={leftButtonHandler}
+                  >{activeButtons.leftButtonVal}
+                </Button>
+              </Grid.Column>
+              <Grid.Column mobile={16} tablet={8} computer={4}>
+                <Button
+                  color={activeButtons.rightButtonColor}
+                  onClick={rightButtonHandler}
+                  >{activeButtons.rightButtonVal}
+                </Button>
               </Grid.Column>
             </Grid.Row>
           </Grid>
@@ -142,7 +175,33 @@ class ScheduleRestoreForm extends React.Component {
       </Segment>
     );
   }
-
 }
 
-export default ScheduleRestoreForm;
+class ScheduleDetails extends React.Component {
+  render() {
+    const scheduleDetails = this.props.schedule ? (
+      <div>
+        <Header
+          as={'h2'}
+          color={'teal'}>
+          Scheduled Restore: {this.props.schedule.name}
+        </Header>
+        <DetailsForm 
+          schedule={this.props.schedule}
+          decryptKeys={this.props.decryptKeys}
+          runHandler={this.props.runHandler}
+          updateHandler={this.props.updateHandler}
+          deleteHandler={this.props.deleteHandler}/>
+      </div>
+    ) : (
+      <Header as={'h2'}>Scheduled Restore</Header>
+    );
+    return (
+      <div>
+        {scheduleDetails}
+      </div>
+    )
+  }
+}
+
+export default ScheduleDetails;

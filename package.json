@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "body-parser": "~1.0.0",
+    "concurrently": "^3.5.1",
     "cookie-parser": "~1.0.1",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
@@ -28,6 +29,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "client": "yarn start",
+    "server": "node server/server.js",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "start-dev": "nf start -p 3000",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

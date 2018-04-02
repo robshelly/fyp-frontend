@@ -8,7 +8,7 @@ exports.getAll = function(req, res) {
 
     // Creates list of scheduled jobs
     var schedules = data.jobs.filter(function (e){
-      if (e.name.includes('schedule')) return e.name
+      if (e.name.startsWith('schedule-')) return e.name
     })
 
     // Get details for each job returned
@@ -32,7 +32,8 @@ exports.getAll = function(req, res) {
           if (job.lastBuild) {
             jenkins.build.get(job.fullName, job.lastBuild.number).then((data) => {
               results.push({
-                name: job.displayName,
+                // Remove schedule- from start of name
+                name: job.displayName.substring(9),
                 lastRun: data.timestamp/1000,
                 lastResult: data.result
               });
@@ -42,9 +43,9 @@ exports.getAll = function(req, res) {
             }).catch((err) => { console.log("Error: ", err) });
           } else {
             results.push({
-              name: job.displayName,
-              lastRun: null,
-              lastResult: null
+              name: job.displayName.substring(9),
+              lastRun: 'NONE',
+              lastResult: 'NONE'
             });
             // If all async call complete... return
             if (--tasksToGo === 0) {onComplete()}

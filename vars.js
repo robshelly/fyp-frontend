@@ -1,13 +1,17 @@
 //Using two different Jenkins API node wrappers because they each do some jobs better
-var ip = "54.229.94.207"
+var jenkinsIp = "34.251.119.179"
+var jenkinsUsername = "admin"
+var jenkinsPassword ="cloudTech2017"
 
-let jenkins = require('jenkins')({ baseUrl: 'http://admin:cloudTech2017@' + ip + ':8080', crumbIssuer: false, promisify: true });
+let jenkinsUrl = 'http://' + jenkinsUsername + ':' + jenkinsPassword + '@' + jenkinsIp + ':8080'
+
+let jenkins = require('jenkins')({ baseUrl: jenkinsUrl, crumbIssuer: false, promisify: true });
 
 var jenkinsapi = require('jenkins-api');
-let jenkinsApi = jenkinsapi.init('http://admin:cloudTech2017@' + ip + ':8080');
+let jenkinsApi = jenkinsapi.init(jenkinsUrl);
 
 module.exports = {
   jenkins,
   jenkinsApi,
-  ip
+  jenkinsUrl
 };

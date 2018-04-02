@@ -1,5 +1,5 @@
 var request = require('superagent');
-var ip = require('../../../vars').ip;
+var jenkinsUrl = require('../../../vars').jenkinsUrl;
 
 exports.delete = function(req, res) {
 
@@ -7,7 +7,7 @@ exports.delete = function(req, res) {
 
 
   var unamePwdDeletePromise = new Promise((resolve, reject) => {
-    request.post('http://admin:cloudTech2017@' + ip + ':8080/credentials/store/system/domain/_/credential/api-gpg-uname-pwd-' + req.params.keyName + '/doDelete')
+    request.post(jenkinsUrl + 'credentials/store/system/domain/_/credential/api-gpg-uname-pwd-' + req.params.keyName + '/doDelete')
     .type('application/x-www-form-urlencoded')
     .send(`json={
       "Submit": "Yes"
@@ -22,7 +22,7 @@ exports.delete = function(req, res) {
   });
 
   var secretKeyPromise = new Promise((resolve, reject) => {
-    request.post('http://admin:cloudTech2017@' + ip + ':8080/credentials/store/system/domain/_/credential/api-gpg-secret-key-' + req.params.keyName + '/doDelete')
+    request.post(jenkinsUrl + '/credentials/store/system/domain/_/credential/api-gpg-secret-key-' + req.params.keyName + '/doDelete')
     .type('application/x-www-form-urlencoded')
     .send(`json={
       "Submit": "Yes"

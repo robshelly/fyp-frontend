@@ -1,5 +1,5 @@
 var request = require('superagent');
-var ip = require('../../../vars').ip;
+var jenkinsUrl = require('../../../vars').jenkinsUrl;
 
 
 
@@ -15,7 +15,7 @@ exports.create = function(req, res) {
 
 
   var unamePwdCreatePromise = new Promise((resolve, reject) => {
-    request.post('http://admin:cloudTech2017@' + ip + ':8080/credentials/store/system/domain/_/createCredentials')
+    request.post(jenkinsUrl + '/credentials/store/system/domain/_/createCredentials')
     .type('application/x-www-form-urlencoded')
     .send(`json={
       "": "0",

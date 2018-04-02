@@ -4,13 +4,12 @@ exports.run = function(req, res) {
   console.log("API::Running scheduled restore")
   console.log("\tName: " + req.params.scheduleName)
 
-  jenkins.job.build(
-    { name: req.params.scheduleName},
-    function(err) {
-      if (err) throw err;
-      console.log("\tSuccess")
+  // Leave parameters blank and saved default values are used
+  jenkins.job.build({ name: 'schedule-'+req.params.scheduleName, parameters: {}})
+    .then((data) => {
       res.json("The restoration successfully triggered!")
-    }
-  );
-
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }

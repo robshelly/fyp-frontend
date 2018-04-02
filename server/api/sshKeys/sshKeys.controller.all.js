@@ -1,44 +1,44 @@
 var request = require('superagent');
-var ip = require('../../../vars').ip;
+var jenkinsUrl = require('../../../vars').jenkinsUrl;
 
-
-
-exports.getKeys = function(req, res) {
-
+exports.getKeys = function (req, res) {
   console.log("API::Fetching SSH keys")
 
-  request.get('http://admin:cloudTech2017@' + ip + ':8080/credentials/')
-  .then(function(data) {
-
-    var regex = /href="\/credentials\/store\/system\/domain\/_\/credential.+?"/ig
-
-    var matches = []
-    var match;
-    
-
-    do {
-        match = regex.exec(data.text);
-        if (match) {
-            matches.push(match[0]);
-        }
-    } while (match);
-
-    var arrayLength = matches.length;
-    var keys = []
-    for (var i = 0; i < arrayLength; i++) {
-      keys.push(matches[i].split("/").slice(-1)[0].slice(0,-1))
-    }
-
-    var sshKeys = keys.filter(function (k){
-      if (k.includes('ssh')) return k;
-    })
-
-    res.json(sshKeys)
-      
+  request.get(jenkinsUrl + '/credentials/')
+  .then(parseKeys)
+  .then((data) => {
+    var keys = data.map((key) => key.substring(4))
+    res.json(keys)
   })
-  .catch(function(err) {
-      console.log(err)
-      console.log("Error")
+  .catch((err) => {
+    console.log("Error: ", err)
   });
 
+}
+
+
+var parseKeys = function(data) {
+  // Parse the http response for the gpg keys
+  var regex = /href="\/credentials\/store\/system\/domain\/_\/credential.+?"/ig
+
+  var matches = []
+  var match;
+
+  do {
+      match = regex.exec(data.text);
+      if (match) {
+          matches.push(match[0]);
+      }
+  } while (match);
+
+  var arrayLength = matches.length;
+  var keys = []
+  for (var i = 0; i < arrayLength; i++) {
+    keys.push(matches[i].split("/").slice(-1)[0].slice(0,-1))
+  }
+
+  var keys = keys.filter((key) => key.startsWith('ssh'))
+
+  return keys
+    
 }
