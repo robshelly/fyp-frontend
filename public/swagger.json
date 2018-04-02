@@ -617,6 +617,102 @@
           }
         }
       }
+    },
+    "/awsKey": {
+      "get": {
+        "description": "Get the AWS Acces key ID",
+        "summary": "Get AWS Key",
+        "operationId": "GetAWSKeys",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "name": "aws-key"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Add an AWS access key",
+        "summary": "Add AWS Key",
+        "operationId": "AddAWSKey",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Key",
+            "description": "The key to create",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "keyId",
+                "secretKey"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "keyId": {
+                  "type": "string"
+                },
+                "secretKey": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "name": "aws-key",
+                "keyId": "AWSACCESSKEYID",
+                "secretKey": "AWSSECRETACCESSKEY"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key successfully added"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/awsKey/{keyName}": {
+      "delete": {
+        "description": "Delete AWS key",
+        "summary": "Delete AWS Key",
+        "operationId": "DeleteAWSKey",
+        "parameters": [
+          {
+            "name": "keyName",
+            "in": "path",
+            "description": "The name of the AWs key to delete",
+            "required": true,
+            "type": "string",
+            "example": "test-aws-key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The resource was deleted successfully"
+          },
+          "404": {
+            "description": "Schedule not found"
+          }
+        }
+      }
     }
   }
 }

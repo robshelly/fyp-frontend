@@ -1,11 +1,10 @@
 var request = require('superagent');
 var jenkinsUrl = require('../../../vars').jenkinsUrl;
 
-exports.delete = function(req, res) {
+exports.deleteKey = function(req, res) {
+  console.log("API::Deleting AWS key")
 
-  console.log("API::Deleting SSH key")
-
-  request.post(jenkinsUrl + '/credentials/store/system/domain/_/credential/api-ssh-' + req.params.keyName + '/doDelete')
+  request.post(jenkinsUrl + '/credentials/store/system/domain/_/credential/api-aws-' + req.params.keyName + '/doDelete')
   .type('application/x-www-form-urlencoded')
   .send(`json={
     "Submit": "Yes"

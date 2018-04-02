@@ -4,6 +4,7 @@ module.exports = function(app) {
   app.use('/schedules', require('./api/schedules/index'));
   app.use('/sshKeys', require('./api/sshKeys/index'));
   app.use('/gpgKeys', require('./api/gpgKeys/index'));
+  app.use('/awsKey', require('./api/awsKey/index'));
 
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

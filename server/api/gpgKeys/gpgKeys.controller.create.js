@@ -38,7 +38,7 @@ exports.create = function(req, res) {
   })
 
   var secretKeyCreatePromise = new Promise((resolve, reject) => {
-    request.post('http://admin:cloudTech2017@' + ip + ':8080/credentials/store/system/domain/_/createCredentials')
+    request.post(jenkinsUrl + '/credentials/store/system/domain/_/createCredentials')
     .type('application/x-www-form-urlencoded')
     .send(`json={
       "": "0",

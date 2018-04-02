@@ -6,6 +6,7 @@ import Home from './components/Home'
 import Docs from './components/docs/Docs'
 import Restores from './components/restore/Restore'
 import Schedules from './components/schedule/Schedules'
+import Keys from './components/keys/Keys'
 
 import { Header, Segment, Menu } from 'semantic-ui-react'
 
@@ -22,6 +23,9 @@ class AppMenu extends Component {
           </Menu.Item>
           <Menu.Item as={ Link } name='restores' to='/restores'>
             Restorations
+          </Menu.Item>
+          <Menu.Item as={ Link } name='keys' to='/keys'>
+            Keys
           </Menu.Item>
           <Menu.Item as={ Link } name='docs' to='/docs'>
             Documentation
@@ -52,6 +56,7 @@ class Main extends Component {
           <Route exact path='/' component={Home}/>
           <Route path='/restores' component={Restores}/>
           <Route path='/schedules' component={Schedules}/>
+          <Route path='/keys' component={Keys}/>
           <Route path='/docs' component={Docs}/>
         </Switch>
       </div>
