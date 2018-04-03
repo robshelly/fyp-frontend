@@ -324,13 +324,13 @@ paths:
             properties:
               name:
                 type: string
-              description:
+              username:
                 type: string
               privateKey:
                 type: string
             example:
               name: "test-server-key"
-              description: "This is the key for some test server"
+              username: "ec2-user"
               privateKey: |
                 -----BEGIN RSA PRIVATE KEY-----
                 some private key here

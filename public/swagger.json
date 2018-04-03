@@ -464,7 +464,7 @@
                 "name": {
                   "type": "string"
                 },
-                "description": {
+                "username": {
                   "type": "string"
                 },
                 "privateKey": {
@@ -473,7 +473,7 @@
               },
               "example": {
                 "name": "test-server-key",
-                "description": "This is the key for some test server",
+                "username": "ec2-user",
                 "privateKey": "-----BEGIN RSA PRIVATE KEY-----\nsome private key here\n-----END RSA PRIVATE KEY-----\n"
               }
             }

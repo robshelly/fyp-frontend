@@ -15,13 +15,13 @@ exports.create = function(req, res) {
     "credentials": {
       "scope": "GLOBAL",
       "id": "api-ssh-${req.body.name}",
-      "username": "",
+      "username": "${req.body.username}",
       "password": "",
       "privateKeySource": {
         "stapler-class": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey$DirectEntryPrivateKeySource",
         "privateKey": "${privateKey}",
       },
-      "description": "CreatedByAPI:${req.body.description}",
+      "description": "CreatedByAPI::SSH ${req.body.name}",
       "stapler-class": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey"
     }
   }`)

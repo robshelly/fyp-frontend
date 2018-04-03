@@ -87,12 +87,27 @@ class Keys extends React.Component {
     });
   }
 
-  addSshKey(name) {
-    console.log("Add SSH key")
+  addSshKey(name,username,privateKey) {
+    request.post('http://127.0.0.1:4000/sshKeys/')
+    .send({name: name, username: username, privateKey: privateKey})
+    .set('Content-Type', 'application/json')
+
+    .then((res) => {
+      this.fetchSSHKeys()
+    })
+    .catch((err) => {
+      console.log("Error fetching keys:" + err)
+    });
   }
 
   deleteGpgKey(name) {
-    console.log("Delete GPG Key: ", name)
+    request.delete('http://127.0.0.1:4000/gpgKeys/'+name)
+    .then((res) => {
+      this.fetchGPGKeys()
+    })
+    .catch((err) => {
+      console.log("Error fetching keys:" + err)
+    });
   }
 
   addGgpKey(name) {

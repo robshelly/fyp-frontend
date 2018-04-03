@@ -1,5 +1,5 @@
 //Using two different Jenkins API node wrappers because they each do some jobs better
-var jenkinsIp = "34.251.119.179"
+var jenkinsIp = "52.210.204.166"
 var jenkinsUsername = "admin"
 var jenkinsPassword ="cloudTech2017"
 
