@@ -12,16 +12,16 @@ exports.addKey = function(req, res) {
     "credentials": {
       "scope": "GLOBAL",
       "id": "api-aws-${req.body.name}",
-      "accessKey": "${accessKey}",
-      "secretKey": "${secretKey}",
+      "accessKey": "${req.body.keyId}",
+      "secretKey": "${req.body.secretKey}",
       "description": "CreatedByAPI:AWS Credentials",
       "$class": "com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl"
     }
   }`)
-  .then(function(res) {
-      console.log(res)
+  .then((data) => {
+      res.json("Key successfully added")
   })
-  .catch(function(err) {
+  .catch((err) => {
       console.log(err)
       console.log("Error")
   });

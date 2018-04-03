@@ -2,7 +2,7 @@ var request = require('superagent');
 var jenkinsUrl = require('../../../vars').jenkinsUrl;
 
 exports.deleteKey = function(req, res) {
-  console.log("API::Deleting AWS key")
+  console.log("API::Deleting AWS key: ", req.params.keyName)
 
   request.post(jenkinsUrl + '/credentials/store/system/domain/_/credential/api-aws-' + req.params.keyName + '/doDelete')
   .type('application/x-www-form-urlencoded')
@@ -14,7 +14,7 @@ exports.deleteKey = function(req, res) {
   })
   .catch((err) => {
       console.log(err)
-      console.log("Error")
+      console.log("Error Deleting AWS Key")
   });
 
 

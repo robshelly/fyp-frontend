@@ -630,15 +630,8 @@
           "200": {
             "description": "Success",
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                }
-              },
-              "example": {
-                "name": "aws-key"
-              }
+              "type": "string",
+              "example": "aws-key"
             }
           }
         }

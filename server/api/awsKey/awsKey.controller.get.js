@@ -36,9 +36,9 @@ var parseKeys = function(data) {
     keys.push(matches[i].split("/").slice(-1)[0].slice(0,-1))
   }
 
-  var awsKey = keys.find((key) => key.startsWith('api-aws'));
-
-  return ({name: awsKey.substring(8)})
+  var awsKey = keys.find((key) => key.startsWith('api-aws-'));
+  if (awsKey) return awsKey.substring(8)
+  else return null
     
 }
 

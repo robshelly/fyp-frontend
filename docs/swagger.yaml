@@ -443,12 +443,8 @@ paths:
         "200":
           description: Success
           schema:
-            type: object
-            properties:
-              name:
-                type: string
-            example:
-              name: aws-key
+            type: string
+            example: aws-key
     post:
       description: Add an AWS access key
       summary:  Add AWS Key
