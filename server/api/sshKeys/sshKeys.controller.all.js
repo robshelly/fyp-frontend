@@ -7,7 +7,7 @@ exports.getKeys = function (req, res) {
   request.get(jenkinsUrl + '/credentials/')
   .then(parseKeys)
   .then((data) => {
-    var keys = data.map((key) => key.substring(4))
+    var keys = data.map((key) => key.substring(8))
     res.json(keys)
   })
   .catch((err) => {
@@ -37,7 +37,7 @@ var parseKeys = function(data) {
     keys.push(matches[i].split("/").slice(-1)[0].slice(0,-1))
   }
 
-  var keys = keys.filter((key) => key.startsWith('ssh'))
+  var keys = keys.filter((key) => key.startsWith('api-ssh'))
 
   return keys
     

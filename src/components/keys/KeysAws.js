@@ -103,7 +103,6 @@ class KeyDetails extends React.Component {
   }
 
   render() {
-    console.log("Rendering: ", this.props.awsKey)
     return (
       <Segment color={'blue'}>
       <Grid stackable columns={2}>
@@ -127,7 +126,6 @@ class KeyDetails extends React.Component {
 
 class AwsKey extends React.Component {
   render() {
-    console.log("Props: ", this.props.awsKey)
     const keyComponent = this.props.awsKey ? (
       <KeyDetails
         awsKey={this.props.awsKey}

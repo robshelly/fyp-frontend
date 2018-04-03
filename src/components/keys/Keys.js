@@ -1,8 +1,10 @@
 import React from 'react';
 import request from 'superagent';
-import { Header } from 'semantic-ui-react';
+import { Grid, Header } from 'semantic-ui-react';
 
 import AWS from './KeysAws'
+import SSH from './KeysSsh'
+import GPG from './KeysGpg'
 
 class Keys extends React.Component {
   constructor(props) {
@@ -73,18 +75,62 @@ class Keys extends React.Component {
       .catch((err) => {
         console.log("Error fetching keys:" + err)
       });
+  }
 
+  deleteSshKey(name) {
+    request.delete('http://127.0.0.1:4000/sshKeys/'+name)
+    .then((res) => {
+      this.fetchSSHKeys()
+    })
+    .catch((err) => {
+      console.log("Error fetching keys:" + err)
+    });
+  }
+
+  addSshKey(name) {
+    console.log("Add SSH key")
+  }
+
+  deleteGpgKey(name) {
+    console.log("Delete GPG Key: ", name)
+  }
+
+  addGgpKey(name) {
+    console.log("Add SSH key")
   }
 
   render() {
     return (
       <div>
         <Header as={'h2'}>Keys</Header>
-        <AWS
-          awsKey={this.state.awsKey}
-          deleteHandler={this.deleteAWSKey.bind(this)}
-          addHandler={this.addAWSKey.bind(this)}
-        />
+        <Grid>
+        <Grid.Row>
+          <Grid.Column>
+            <AWS
+              awsKey={this.state.awsKey}
+              deleteHandler={this.deleteAWSKey.bind(this)}
+              addHandler={this.addAWSKey.bind(this)}
+            />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column mobile={16} tablet={8} computer={8}>
+            <SSH
+              sshKeys={this.state.sshKeys}
+              deleteHandler={this.deleteSshKey.bind(this)}
+              addHandler={this.addSshKey.bind(this)}
+            />
+          </Grid.Column>
+          <Grid.Column mobile={16} tablet={8} computer={8}>
+            <GPG
+              gpgKeys={this.state.gpgKeys}
+              deleteHandler={this.deleteGpgKey.bind(this)}
+              addHandler={this.addGgpKey.bind(this)}
+            />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+
       </div>
     )
   }

@@ -96,7 +96,7 @@ class Schedule extends React.Component {
     this.setState({ status : 'run'} )
   }
 
-  handleStart= () => {
+  handleStart = () => {
     this.props.runHandler(this.props.schedule.name);
     this.setState({status: 'listNormal'});
   }
