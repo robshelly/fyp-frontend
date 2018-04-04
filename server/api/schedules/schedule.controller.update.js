@@ -3,14 +3,6 @@ var jenkins = require('../../../vars').jenkinsApi;
 exports.update = function(req, res) {
 
   console.log("API::Updating Scheduled Restore")
-  console.log(
-    "\tName: " + req.body.name + "\n" +
-    "\tLocation: " + req.body.location + "\n" +
-    "\tFile: "+ req.body.file + "\n" +
-    "\tData Type: " + req.body.dataType + "\n" +
-    "\tDecryption Key: " + req.body.decryptKey + "\n" +
-    "\tFrequency: " + req.body.frequency)
-
  
     let template=`<?xml version='1.0' encoding='UTF-8'?>
     <flow-definition plugin="workflow-job@2.15">
@@ -67,6 +59,10 @@ exports.update = function(req, res) {
       </properties>
       <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.41">
         <script>node {
+          def restorationServerIp
+          def backupFileTested
+          def backupFileTestedDate
+          def restoreFailed = false
           try {
     
             stage (&apos;Deploy Restoration Server&apos;) {
@@ -76,7 +72,6 @@ exports.update = function(req, res) {
               ]
             }
           
-            def restorationServerIp  
             stage(&apos;Retrieve Restoration Server IP&apos;) {        
           
               withCredentials([[$class: &apos;AmazonWebServicesCredentialsBinding&apos;, accessKeyVariable: &apos;KEY_ID&apos;, credentialsId: &apos;aws-jenkins&apos;, secretKeyVariable: &apos;SECRET_KEY&apos;]]) {
@@ -91,12 +86,14 @@ exports.update = function(req, res) {
             println &quot;Restoration Server IP: \${restorationServerIp}&quot;
           
             stage(&apos;Decrypt Backup&apos;) {
-              build job: &apos;auto-pipeline-backup-decrypt-latest&apos;, parameters: [
+              def decryptResult = build job: &apos;auto-pipeline-backup-decrypt-latest&apos;, parameters: [
                 string(name: &apos;backupIp&apos;, value: &quot;\${backupIp}&quot;),
                 string(name: &apos;pathToFile&apos;, value: &quot;\${pathToFile}&quot;),
                 string(name: &apos;decryptKey&apos;, value: &quot;\${decryptKey}&quot;),
                 string(name: &apos;restorationServerIp&apos;, value: &quot;\${restorationServerIp}&quot;)
               ]
+              backupFileTested = decryptResult.getBuildVariables().BackupFile
+              backupFileTestedDate = decryptResult.getBuildVariables().BackupFileDate
             }
           
             stage(&apos;Restore Backup&apos;) {
@@ -112,19 +109,34 @@ exports.update = function(req, res) {
                   break;
               }
             }
-          
-            stage(&apos;Destroy Restoration Server&apos;) {
-              build job: &apos;auto-pipeline-destroy-restoration-server&apos;, parameters: [
-                string(name: &apos;instanceName&apos;, value: &quot;\${BUILD_TAG}&quot;)
-              ]
-            }
+
           } catch(Exception e ) {
+            restoreFailed = true
             mail (to: "\${email}",
                   subject: "Backup Restoration Failure",
-                  body: "A backup test restoration has failed: test '\${env.BUILD_TAG}"
+                  body: "A backup test restoration has failed: '\${env.BUILD_TAG}"
                   );
-              error("Restoration failed")
+          } finally {
+            // Destroy resoration server
+            if (restorationServerIp) {
+              println("Restoration server was created... destroying")
+              stage(&apos;Destroy Restoration Server&apos;) {
+                build job: &apos;auto-pipeline-destroy-restoration-server&apos;, parameters: [
+                  string(name: &apos;instanceName&apos;, value: &quot;\${BUILD_TAG}&quot;)
+                ]
+              }
+            }
+            // End if job failed
+            if (restoreFailed) error("Restoration failed")
           }
+
+          // If job reaches this point it was successful, email result
+          // and indicate which file was validated
+          mail (to: "\${email}",
+            subject: "Backup Restoration Successful",
+            body: "A backup test restoration has succedded: test \${env.BUILD_TAG}. The following backup file was verified: \${backupFileTested}, modified \${backupFileTestedDate}"
+          );
+
         }</script>
         <sandbox>false</sandbox>
       </definition>
