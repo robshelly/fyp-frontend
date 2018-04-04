@@ -7,6 +7,8 @@ exports.create = function(req, res) {
 
   // Replace all newlines and carriage returns with \n to post
   var privateKey = req.body.privateKey.replace(/[\n\r]/g, '\\n');
+  //  Also have to escape all plus symbols as they are special chars
+  privateKey = privateKey.replace(/\+/g, '%2B');
 
   request.post(jenkinsUrl + '/credentials/store/system/domain/_/createCredentials')
   .type('application/x-www-form-urlencoded')
@@ -19,7 +21,7 @@ exports.create = function(req, res) {
       "password": "",
       "privateKeySource": {
         "stapler-class": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey$DirectEntryPrivateKeySource",
-        "privateKey": "${privateKey}",
+        "privateKey": '${privateKey}',
       },
       "description": "CreatedByAPI::SSH ${req.body.name}",
       "stapler-class": "com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey"

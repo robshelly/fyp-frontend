@@ -36,10 +36,6 @@ class SshKeyForm extends React.Component {
       return;
     }
 
-    console.log("Add Handler" +
-      "\nName: ", name +
-      "\nUsername: ", username +
-      "\nPrivateKey: ", privateKey)
     this.props.addHandler(name, username, privateKey);
     this.setState(initialFormState);
   }

@@ -91,7 +91,6 @@ class Keys extends React.Component {
     request.post('http://127.0.0.1:4000/sshKeys/')
     .send({name: name, username: username, privateKey: privateKey})
     .set('Content-Type', 'application/json')
-
     .then((res) => {
       this.fetchSSHKeys()
     })
@@ -110,8 +109,16 @@ class Keys extends React.Component {
     });
   }
 
-  addGgpKey(name) {
-    console.log("Add SSH key")
+  addGgpKey(name,username,password,privateKey) {
+    request.post('http://127.0.0.1:4000/gpgKeys/')
+    .send({name: name, username: username, password: password, privateKey: privateKey})
+    .set('Content-Type', 'application/json')
+    .then((res) => {
+      this.fetchGPGKeys()
+    })
+    .catch((err) => {
+      console.log("Error fetching keys:" + err)
+    });
   }
 
   render() {
