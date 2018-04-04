@@ -181,6 +181,7 @@
                 "pathToFile",
                 "dataType",
                 "decryptKey",
+                "email",
                 "frequency"
               ],
               "properties": {
@@ -196,6 +197,9 @@
                 "dataType": {
                   "type": "string"
                 },
+                "email": {
+                  "type": "string"
+                },
                 "decryptKey": {
                   "type": "string"
                 }
@@ -206,6 +210,7 @@
                 "pathToFile": "backup/backup.json.gpg",
                 "dataType": "json",
                 "decryptKey": "backupKey1",
+                "email": "test@example.com",
                 "frequency": "0 0 * * 7"
               }
             }
@@ -260,6 +265,9 @@
               "decryptKey": {
                 "type": "string"
               },
+              "email": {
+                "type": "string"
+              },
               "frequency": {
                 "type": "string"
               },
@@ -287,6 +295,7 @@
               "pathToFile": "backup/backup.json.gpg",
               "dataType": "json",
               "decryptKey": "backupKey1",
+              "email": "test@example.com",
               "frequency": "0 0 * * 7",
               "builds": [
                 {
@@ -357,6 +366,7 @@
                 "file",
                 "dataType",
                 "decryptKey",
+                "email",
                 "frequency"
               ],
               "properties": {
@@ -372,6 +382,9 @@
                 "dataType": {
                   "type": "string"
                 },
+                "email": {
+                  "type": "string"
+                },
                 "decryptKey": {
                   "type": "string"
                 }
@@ -382,6 +395,7 @@
                 "file": "backup/backup2",
                 "dataType": "mysql",
                 "decryptKey": "backupKey2",
+                "email": "test@example.com",
                 "frequency": "0 0 1 * *"
               }
             }

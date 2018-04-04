@@ -72,6 +72,8 @@ var parseParams = function(jobData) {
       results.dataType = params[i].defaultParameterValue.value
     if (params[i].defaultParameterValue.name == 'decryptKey')
       results.decryptKey = params[i].defaultParameterValue.value
+    if (params[i].defaultParameterValue.name == 'email')
+      results.email = params[i].defaultParameterValue.value
     if (params[i].defaultParameterValue.name == 'frequency')
       results.frequency = params[i].defaultParameterValue.value
   }

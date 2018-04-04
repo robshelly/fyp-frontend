@@ -65,7 +65,7 @@ class ScheduleSingle extends React.Component {
       });
   }
 
-  updateSchedule(name, server, pathToFile, dataType, decryptKey, frequency) {
+  updateSchedule(name, server, pathToFile, dataType, decryptKey, email, frequency) {
     console.log("Updating Scheduled Restore: " + name)
     request
       .put('http://127.0.0.1:4000/schedules/' + name)
@@ -75,6 +75,7 @@ class ScheduleSingle extends React.Component {
         pathToFile: pathToFile,
         dataType: dataType,
         decryptKey: decryptKey,
+        email: email,
         frequency: frequency
       })
       .set('Content-Type', 'application/json')

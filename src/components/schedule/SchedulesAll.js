@@ -70,7 +70,7 @@ class SchedulesAll extends React.Component {
       });
   }
 
-  scheduleRestore(name,server,pathToFile,dataType,decryptKey,frequency) {
+  scheduleRestore(name,server,pathToFile,dataType,decryptKey,email,frequency) {
     request
       .post('http://127.0.0.1:4000/schedules/')
       .send({
@@ -79,6 +79,7 @@ class SchedulesAll extends React.Component {
         pathToFile: pathToFile,
         dataType: dataType,
         decryptKey: decryptKey,
+        email: email,
         frequency: frequency
       })
       .set('Content-Type', 'application/json')

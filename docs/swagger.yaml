@@ -127,6 +127,7 @@ paths:
               - pathToFile
               - dataType
               - decryptKey
+              - email
               - frequency
             properties:
               name:
@@ -137,6 +138,8 @@ paths:
                 type: string
               dataType:
                 type: string
+              email:
+                type: string
               decryptKey:
                 type: string
             example:
@@ -145,6 +148,7 @@ paths:
               pathToFile: "backup/backup.json.gpg"
               dataType: "json"
               decryptKey: "backupKey1"
+              email: "test@example.com"
               frequency: "0 0 * * 7"
       responses:
         "201":
@@ -181,6 +185,8 @@ paths:
               type: string
             decryptKey:
               type: string
+            email:
+              type: string
             frequency:
               type: string
             tests:
@@ -200,6 +206,7 @@ paths:
             pathToFile: "backup/backup.json.gpg"
             dataType: "json"
             decryptKey: "backupKey1"
+            email: "test@example.com"
             frequency: "0 0 * * 7"
             builds:
               - id: "1"
@@ -250,6 +257,7 @@ paths:
               - file
               - dataType
               - decryptKey
+              - email
               - frequency
             properties:
               name:
@@ -260,6 +268,8 @@ paths:
                 type: string
               dataType:
                 type: string
+              email:
+                type: string
               decryptKey:
                 type: string
             example:
@@ -268,6 +278,7 @@ paths:
               file: "backup/backup2"
               dataType: "mysql"
               decryptKey: "backupKey2"
+              email: "test@example.com"
               frequency: "0 0 1 * *"
       responses:
         "200":

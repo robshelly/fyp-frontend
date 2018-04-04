@@ -38,6 +38,11 @@ exports.create = function(req, res) {
               <defaultValue>${req.body.decryptKey}</defaultValue>
             </hudson.model.StringParameterDefinition>
             <hudson.model.StringParameterDefinition>
+              <name>email</name>
+              <description>Email to notify of failed backups</description>
+              <defaultValue>${req.body.email}</defaultValue>
+            </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
               <name>frequency</name>
               <description>This is the frequency with which the job runs. Have no meaning as a parameter but given the Jenkins does not feature any way of retrieving the build schedule via API this is used as a workaround by setting it to the same value</description>
               <defaultValue>${req.body.frequency}</defaultValue>
@@ -53,62 +58,69 @@ exports.create = function(req, res) {
         </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       </properties>
       <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.41">
-          <script>node {
-      
-        stage (&apos;Deploy Restoration Server&apos;) {
-          build job: &apos;auto-pipeline-deploy-restoration-server&apos;, parameters: [
-            string(name: &apos;instanceName&apos;, value: &quot;$BUILD_TAG&quot;),
-            string(name: &apos;dataType&apos;, value: &quot;\${dataType}&quot;),
-          ]
-        }
-      
-        def restorationServerIp  
-        stage(&apos;Retrieve Restoration Server IP&apos;) {        
-      
-          withCredentials([[$class: &apos;AmazonWebServicesCredentialsBinding&apos;, accessKeyVariable: &apos;KEY_ID&apos;, credentialsId: &apos;aws-jenkins&apos;, secretKeyVariable: &apos;SECRET_KEY&apos;]]) {
-      
-            restorationServerIp = sh (
-              script: &apos;&apos;&apos;AWS_ACCESS_KEY_ID=$KEY_ID AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws ec2 --region eu-west-1 describe-instances --filters &quot;Name=tag-value,Values=&quot;$BUILD_TAG | grep PublicIpAddress | awk -F&apos;&quot;&apos; &apos;{print $4}&apos; &apos;&apos;&apos;,
-              returnStdout:true
-            ).trim()
-          }
-        }
-      
-        println &quot;Restoration Server IP: \${restorationServerIp}&quot;
-      
-        stage(&apos;Decrypt Backup&apos;) {
-          build job: &apos;auto-pipeline-backup-decrypt-latest&apos;, parameters: [
-            string(name: &apos;backupIp&apos;, value: &quot;\${backupIp}&quot;),
-            string(name: &apos;pathToFile&apos;, value: &quot;\${pathToFile}&quot;),
-            string(name: &apos;decryptKey&apos;, value: &quot;\${decryptKey}&quot;),
-            string(name: &apos;restorationServerIp&apos;, value: &quot;\${restorationServerIp}&quot;)
-          ]
-        }
-      
-        stage(&apos;Restore Backup&apos;) {
-        // Run the correct restore and read according to the data type!
-          switch(dataType) {
-            case &apos;json&apos;:
-              build job: &apos;auto-pipeline-backup-restore-json&apos;, parameters: [
+        <script>node {
+          try {
+    
+            stage (&apos;Deploy Restoration Server&apos;) {
+              build job: &apos;auto-pipeline-deploy-restoration-server&apos;, parameters: [
+                string(name: &apos;instanceName&apos;, value: &quot;$BUILD_TAG&quot;),
+                string(name: &apos;dataType&apos;, value: &quot;\${dataType}&quot;),
+              ]
+            }
+          
+            def restorationServerIp  
+            stage(&apos;Retrieve Restoration Server IP&apos;) {        
+          
+              withCredentials([[$class: &apos;AmazonWebServicesCredentialsBinding&apos;, accessKeyVariable: &apos;KEY_ID&apos;, credentialsId: &apos;aws-jenkins&apos;, secretKeyVariable: &apos;SECRET_KEY&apos;]]) {
+          
+                restorationServerIp = sh (
+                  script: &apos;&apos;&apos;AWS_ACCESS_KEY_ID=$KEY_ID AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws ec2 --region eu-west-1 describe-instances --filters &quot;Name=tag-value,Values=&quot;$BUILD_TAG | grep PublicIpAddress | awk -F&apos;&quot;&apos; &apos;{print $4}&apos; &apos;&apos;&apos;,
+                  returnStdout:true
+                ).trim()
+              }
+            }
+          
+            println &quot;Restoration Server IP: \${restorationServerIp}&quot;
+          
+            stage(&apos;Decrypt Backup&apos;) {
+              build job: &apos;auto-pipeline-backup-decrypt-latest&apos;, parameters: [
+                string(name: &apos;backupIp&apos;, value: &quot;\${backupIp}&quot;),
+                string(name: &apos;pathToFile&apos;, value: &quot;\${pathToFile}&quot;),
+                string(name: &apos;decryptKey&apos;, value: &quot;\${decryptKey}&quot;),
                 string(name: &apos;restorationServerIp&apos;, value: &quot;\${restorationServerIp}&quot;)
               ]
-              break;
-            case &apos;mysql&apos;:
-              println(&quot;MySQL not implemented yet... here for demo purposes only&quot;)
-              break;
+            }
+          
+            stage(&apos;Restore Backup&apos;) {
+            // Run the correct restore and read according to the data type!
+              switch(dataType) {
+                case &apos;json&apos;:
+                  build job: &apos;auto-pipeline-backup-restore-json&apos;, parameters: [
+                    string(name: &apos;restorationServerIp&apos;, value: &quot;\${restorationServerIp}&quot;)
+                  ]
+                  break;
+                case &apos;mysql&apos;:
+                  println(&quot;MySQL not implemented yet... here for demo purposes only&quot;)
+                  break;
+              }
+            }
+          
+            stage(&apos;Destroy Restoration Server&apos;) {
+              build job: &apos;auto-pipeline-destroy-restoration-server&apos;, parameters: [
+                string(name: &apos;instanceName&apos;, value: &quot;\${BUILD_TAG}&quot;)
+              ]
+            }
+          } catch(Exception e ) {
+            mail (to: "\${email}",
+                  subject: "Backup Restoration Failure",
+                  body: "A backup test restoration has failed: test '\${env.BUILD_TAG}"
+                  );
+              error("Restoration failed")
           }
-        }
-      
-        stage(&apos;Destroy Restoration Server&apos;) {
-          build job: &apos;auto-pipeline-destroy-restoration-server&apos;, parameters: [
-            string(name: &apos;instanceName&apos;, value: &quot;\${BUILD_TAG}&quot;)
-          ]
-        }
-      
-      }</script>
-          <sandbox>false</sandbox>
-        </definition>
-        <disabled>false</disabled>
+        }</script>
+        <sandbox>false</sandbox>
+      </definition>
+      <disabled>false</disabled>
     </flow-definition>
     `
 

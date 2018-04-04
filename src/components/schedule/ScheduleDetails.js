@@ -23,11 +23,13 @@ class DetailsForm extends React.Component {
       pathToFile: schedule.pathToFile,
       dataType: schedule.dataType,
       decryptKey: schedule.decryptKey,
+      email: schedule.email,
       frequency: schedule.frequency,
       serverRequiredWarning: false,
       pathRequiredWarning: false,
       dataTypeRequiredWarning: false,
       decryptKeyRequiredWarning: false,
+      emailRequiredWarning: false,
       frequencyRequiredWarning: false
     }
   }
@@ -59,6 +61,7 @@ class DetailsForm extends React.Component {
     var pathToFile = this.state.pathToFile.trim();
     var dataType = this.state.dataType;
     var decryptKey = this.state.decryptKey;
+    var email = this.state.email.trim();
     var frequency = this.state.frequency.trim();
 
     e.preventDefault();
@@ -68,12 +71,13 @@ class DetailsForm extends React.Component {
     if (!pathToFile) this.setState({pathRequiredWarning: true});
     if (!dataType) this.setState({dataTypeRequiredWarning: true});
     if (!decryptKey) this.setState({decryptKeyRequiredWarning: true});
+    if (!email) this.setState({emailRequiredWarning: true});
     if (!frequency) this.setState({frequencyRequiredWarning: true});
-    if (!server || !pathToFile || !dataType || !decryptKey || !frequency) {
+    if (!server || !pathToFile || !dataType || !decryptKey || !email || !frequency) {
       return;
     }
 
-    this.props.updateHandler(this.props.schedule.name, server, pathToFile, dataType, decryptKey, frequency);
+    this.props.updateHandler(this.props.schedule.name, server, pathToFile, dataType, decryptKey, email, frequency);
   }
 
   render() {
@@ -142,6 +146,16 @@ class DetailsForm extends React.Component {
                 value={this.state.decryptKey}
                 onChange={this.Change}
                 options={decryptKeys} />
+            </Grid.Column>
+            <Grid.Column mobile={16} tablet={8} computer={4}>
+              <Form.Input
+                required={this.state.nameRequiredWarning}
+                error={this.state.nameRequiredWarning}
+                fluid label='Email'
+                placeholder='email'
+                name='email'
+                value={this.state.email}
+                onChange={this.Change}/>
             </Grid.Column>
             <Grid.Column mobile={16} tablet={8} computer={4}>
               <Form.Input
