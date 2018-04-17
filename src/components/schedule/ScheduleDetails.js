@@ -54,6 +54,7 @@ class DetailsForm extends React.Component {
 
   handleStart = () => {
     this.props.runHandler(this.props.schedule.name);
+    this.setState(this.getInitialState)
   }
 
   handleSave = (e) => {

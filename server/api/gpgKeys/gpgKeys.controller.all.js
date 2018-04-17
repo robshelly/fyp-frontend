@@ -36,7 +36,7 @@ var parseKeys = function(data) {
     keys.push(matches[i].split("/").slice(-1)[0].slice(0,-1))
   }
 
-  var gpgKeys = keys.filter((key) => key.startsWith('gpg'))
+  var gpgKeys = keys.filter((key) => key.startsWith('api-gpg'))
 
   return pairKeys(gpgKeys)
     
@@ -56,13 +56,12 @@ var pairKeys = function(keys) {
   var gpgKeys = keys.filter((key) => {
     // return only keys
     // and only if the corresponding creds exist too
-    if (key.startsWith('gpg-key')) {
-      var name = key.substring(8)
-      if (keys.includes('gpg-creds-'+name)) return key;
+    if (key.startsWith('api-gpg-secret-key-')) {
+      var name = key.substring(19)
+      if (keys.includes('api-gpg-uname-pwd-'+name)) return key;
     }
     // but return only the name
-  }).map((key) => key.substring(8))
-
+  }).map((key) => key.substring(19))
   return gpgKeys;
 
 }

@@ -11,7 +11,9 @@ exports.create = function(req, res) {
   // Jenkins saves and uses gpg private keys as secret text
   //  so they can't have newlines
   // Replace all newlines and carriage returns with \\n 
-  var privateKey = req.body.privateKey.replace(/[\n\r]/g, '\\\n');
+  var privateKey = req.body.privateKey.replace(/[\n\r]/g, '\\\\n ');
+  //  Also need to add quotes around it to make it a String
+  privateKey = "'" + privateKey + "'"
   //  Also have to escape all plus symbols as they are special chars
   privateKey = privateKey.replace(/\+/g, '%2B');
 
@@ -29,7 +31,7 @@ exports.create = function(req, res) {
         "id": "api-gpg-uname-pwd-${req.body.name}",
         "username": "${req.body.username}",
         "password": '${req.body.password}',
-        "description": "CreatedByAPI:Username/Password:${req.body.description}",
+        "description": "CreatedByAPI:Username/Password:${req.body.name}",
         "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
       }
     }`)
@@ -51,7 +53,7 @@ exports.create = function(req, res) {
         "scope": "GLOBAL",
         "id": "api-gpg-secret-key-${req.body.name}",
         "secret": "${privateKey}",
-        "description": "CreatedByAPI:SecretKey:${req.body.description}",
+        "description": "CreatedByAPI:SecretKey:${req.body.name}",
         "$class": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl"
       }
     }`)

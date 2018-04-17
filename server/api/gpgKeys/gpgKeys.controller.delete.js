@@ -7,7 +7,7 @@ exports.delete = function(req, res) {
 
 
   var unamePwdDeletePromise = new Promise((resolve, reject) => {
-    request.post(jenkinsUrl + 'credentials/store/system/domain/_/credential/api-gpg-uname-pwd-' + req.params.keyName + '/doDelete')
+    request.post(jenkinsUrl + '/credentials/store/system/domain/_/credential/api-gpg-uname-pwd-' + req.params.keyName + '/doDelete')
     .type('application/x-www-form-urlencoded')
     .send(`json={
       "Submit": "Yes"

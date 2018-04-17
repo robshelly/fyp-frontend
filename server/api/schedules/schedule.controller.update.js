@@ -74,7 +74,7 @@ exports.update = function(req, res) {
           
             stage(&apos;Retrieve Restoration Server IP&apos;) {        
           
-              withCredentials([[$class: &apos;AmazonWebServicesCredentialsBinding&apos;, accessKeyVariable: &apos;KEY_ID&apos;, credentialsId: &apos;aws-jenkins&apos;, secretKeyVariable: &apos;SECRET_KEY&apos;]]) {
+              withCredentials([[$class: &apos;AmazonWebServicesCredentialsBinding&apos;, accessKeyVariable: &apos;KEY_ID&apos;, credentialsId: &apos;api-aws-jenkins&apos;, secretKeyVariable: &apos;SECRET_KEY&apos;]]) {
           
                 restorationServerIp = sh (
                   script: &apos;&apos;&apos;AWS_ACCESS_KEY_ID=$KEY_ID AWS_SECRET_ACCESS_KEY=$SECRET_KEY aws ec2 --region eu-west-1 describe-instances --filters &quot;Name=tag-value,Values=&quot;$BUILD_TAG | grep PublicIpAddress | awk -F&apos;&quot;&apos; &apos;{print $4}&apos; &apos;&apos;&apos;,
