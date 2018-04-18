@@ -19,5 +19,12 @@ This repo contains the web app frontend for the system. It server as a user frie
 * superagent
 * jenkins
 
+## Docker Image
 
+Build Image with the follwing:
 
+    docker build -t rshelly/dashboard-backup-test-centre .
+
+Run image with the following command
+
+    docker run --net="host" -d --name dashboard -p 3000:3000 -p 4000:4000 rshelly/dashboard-backup-test-centre

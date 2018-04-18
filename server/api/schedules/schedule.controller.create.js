@@ -134,7 +134,7 @@ exports.create = function(req, res) {
           // and indicate which file was validated
           mail (to: "\${email}",
             subject: "Backup Restoration Successful",
-            body: "A backup test restoration has succedded: test \${env.BUILD_TAG}. The following backup file was verified: \${backupFileTested}, modified \${backupFileTestedDate}"
+            body: "A backup test restoration has succeeded: test \${env.BUILD_TAG}. The following backup file was verified: \${backupFileTested}, modified \${backupFileTestedDate}"
           );
 
         }</script>
