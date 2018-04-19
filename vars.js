@@ -1,7 +1,7 @@
 //Using two different Jenkins API node wrappers because they each do some jobs better
 var jenkinsIp = "localhost"
-var jenkinsUsername = "admin"
-var jenkinsPassword ="cloudTech2017"
+var jenkinsUsername = "USERNAME"
+var jenkinsPassword ="PASSWORD"
 
 let jenkinsUrl = 'http://' + jenkinsUsername + ':' + jenkinsPassword + '@' + jenkinsIp + ':8080'
 

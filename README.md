@@ -23,7 +23,10 @@ This repo contains the web app frontend for the system. It server as a user frie
 
 Build Image with the follwing:
 
-    docker build -t rshelly/dashboard-backup-test-centre .
+    docker build \
+        --build-arg jenkins_username='admin' \
+        --build-arg jenkins_password='fyp-project' \
+        -t rshelly/dashboard-backup-test-centre .
 
 Run image with the following command
 
