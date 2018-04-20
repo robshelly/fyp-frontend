@@ -22,6 +22,7 @@ class SchedulesAll extends React.Component {
   fetchSchedules() {
 
     request.get('http://127.0.0.1:4000/schedules/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {schedules: JSON.parse(res.text)} );
     })
@@ -34,6 +35,7 @@ class SchedulesAll extends React.Component {
   fetchKeys() {
 
     request.get('http://127.0.0.1:4000/gpgKeys/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {decryptKeys: JSON.parse(res.text)} );
     })
@@ -49,6 +51,7 @@ class SchedulesAll extends React.Component {
       .post('http://127.0.0.1:4000/schedules/' + name)
       .send()
       .set('Content-Type', 'application/json')
+      .set('x-access-token', localStorage.id_token)
       .then((res) => {
         var newSchedules = this.state.schedules
         for(var i = 0; i < newSchedules.length; i++) {
@@ -83,6 +86,7 @@ class SchedulesAll extends React.Component {
         frequency: frequency
       })
       .set('Content-Type', 'application/json')
+      .set('x-access-token', localStorage.id_token)
       .then((res) => {
         this.fetchSchedules()
       })
@@ -95,6 +99,7 @@ class SchedulesAll extends React.Component {
     console.log("Deleting Schedule: ", name)
     request
       .delete('http://127.0.0.1:4000/schedules/' + name)
+      .set('x-access-token', localStorage.id_token)
       .then(() => {
         var schedules = this.state.schedules.filter((schedule) => schedule.name !== name)
         this.setState({schedules: schedules})

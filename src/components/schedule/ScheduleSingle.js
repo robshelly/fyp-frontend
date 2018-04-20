@@ -22,6 +22,7 @@ class ScheduleSingle extends React.Component {
   fetchSchedule() {
 
     request.get('http://127.0.0.1:4000/schedules/' + this.props.match.params.name)
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       var schedule = JSON.parse(res.text)
       this.setState( {results: schedule.tests} );
@@ -36,6 +37,7 @@ class ScheduleSingle extends React.Component {
   fetchKeys() {
 
     request.get('http://127.0.0.1:4000/gpgKeys/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {decryptKeys: JSON.parse(res.text)} );
     })
@@ -45,11 +47,11 @@ class ScheduleSingle extends React.Component {
   }
 
   runSchedule(name) {
-    console.log("Running Scheduled Restore Now: " + name)
     request
       .post('http://127.0.0.1:4000/schedules/' + name)
       .send()
       .set('Content-Type', 'application/json')
+      .set('x-access-token', localStorage.id_token)
       .then((res) => {
         var newResults = this.state.results
         var id = newResults.length === 0 ? 1 : (parseInt(newResults[0].id, 10) + 1).toString()
@@ -79,6 +81,7 @@ class ScheduleSingle extends React.Component {
         frequency: frequency
       })
       .set('Content-Type', 'application/json')
+      .set('x-access-token', localStorage.id_token)
       .then((res) => {
         this.fetchSchedule()
       })
@@ -96,6 +99,7 @@ class ScheduleSingle extends React.Component {
           runHandler={this.runSchedule.bind(this)}
           updateHandler={this.updateSchedule.bind(this)}
           />
+        <br/>
         <Results 
           results={this.state.results}
           />

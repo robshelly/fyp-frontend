@@ -119,7 +119,7 @@ class Schedule extends React.Component {
         <Grid stackable columns={4}>
           <Grid.Column>
             <Header as={'h4'}>
-            <Link to={'/schedules/' + this.props.schedule.name}> {this.props.schedule.name} </Link>
+            <Link to={'/app/schedules/' + this.props.schedule.name}> {this.props.schedule.name} </Link>
             </Header>
           </Grid.Column>
           <Time lastRun={this.props.schedule.lastRun} />

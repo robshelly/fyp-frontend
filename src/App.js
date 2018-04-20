@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Redirect, Switch, Route } from 'react-router-dom'
 import { Link } from 'react-router-dom';
 
 import Home from './components/Home'
@@ -8,9 +8,30 @@ import Restores from './components/restore/Restore'
 import Schedules from './components/schedule/Schedules'
 import Keys from './components/keys/Keys'
 
-import { Header, Segment, Menu } from 'semantic-ui-react'
+import { Menu } from 'semantic-ui-react'
+
+import AuthService from './components/AuthService';
+import withAuth from './components/withAuth';
+const Auth = new AuthService();
 
 class AppMenu extends Component {
+  constructor(props) {
+    super(props)
+    this.handleLogout = this.handleLogout.bind(this)
+    this.state = { activeItem: ''}
+  }
+  
+  handleItemClick = (e, { name }) => {
+    this.setState({activeItem: name})
+    this.props.history.push(`/app/${name}`);
+  }
+
+
+
+  handleLogout() {
+    this.props.handleLogout();
+  }
+
   render() {
     return (
       <Menu
@@ -18,65 +39,62 @@ class AppMenu extends Component {
         color={'teal'}
         size={'large'}
         >
-          <Menu.Item as={ Link } name='schedules' to='/schedules'>
+          <Menu.Item name='schedules' active={this.state.activeItem ==='schedules'} onClick={this.handleItemClick}>
             Schedules
           </Menu.Item>
-          <Menu.Item as={ Link } name='restores' to='/restores'>
+          <Menu.Item name='restores' active={this.state.activeItem ==='restores'} onClick={this.handleItemClick}>
             Restorations
           </Menu.Item>
-          <Menu.Item as={ Link } name='keys' to='/keys'>
+          <Menu.Item name='keys' active={this.state.activeItem ==='keys'} onClick={this.handleItemClick}>
             Keys
           </Menu.Item>
-          <Menu.Item as={ Link } name='docs' to='/docs'>
+          <Menu.Item name='docs' active={this.state.activeItem ==='docs'} onClick={this.handleItemClick}>
             Documentation
           </Menu.Item>
+          <Menu.Menu position='right'>
+            <Menu.Item onClick={this.handleLogout}>
+              Logout
+            </Menu.Item>
+          </Menu.Menu>
       </Menu>
     )
   }
 }
 
-class Banner extends Component {
-  render () {
+class Main extends Component {
+  render() {
     return (
-      <Segment inverted color='teal'>
-          <Header as='h1'>
-            Backup Test Restoration Centre
-          </Header>
-      </Segment>
+        <Switch>
+          <Route path='/app/schedules' component={Schedules}/>
+          <Route path='/app/restores' component={Restores}/>
+          <Route path='/app/keys' component={Keys}/>
+          <Route path='/app/docs' component={Docs}/>
+        </Switch>
     );
   }
 }
 
 
-class Main extends Component {
+
+
+class App extends Component {
+
+  handleLogout(){
+    Auth.logout()
+    this.props.history.replace('/');
+  }
+
   render() {
     return (
       <div>
-        <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route path='/restores' component={Restores}/>
-          <Route path='/schedules' component={Schedules}/>
-          <Route path='/keys' component={Keys}/>
-          <Route path='/docs' component={Docs}/>
-        </Switch>
+        <AppMenu handleLogout={this.handleLogout.bind(this)} history={this.props.history}/>
+        <Main/>
       </div>
     );
   }
 }
 
-class App extends Component {
-  render() {
-    return (
-      <Segment basic>
-        <Banner/>
-        <AppMenu/>
-        <Main/>
-      </Segment>
-    );
-  }
-}
 
-
-export default App;
+export default withAuth(App);
 
 

@@ -15,6 +15,18 @@
   "produces": [
     "application/json"
   ],
+  "securityDefinitions": {
+    "UserSecurity": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-access-token"
+    }
+  },
+  "security": [
+    {
+      "UserSecurity": []
+    }
+  ],
   "paths": {
     "/restores": {
       "get": {

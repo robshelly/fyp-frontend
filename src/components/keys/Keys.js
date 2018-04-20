@@ -24,6 +24,7 @@ class Keys extends React.Component {
 
   fetchAWSKey() {
     request.get('http://127.0.0.1:4000/awsKey/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {awsKey: JSON.parse(res.text)} );
     })
@@ -34,6 +35,7 @@ class Keys extends React.Component {
 
   fetchSSHKeys() {
     request.get('http://127.0.0.1:4000/sshKeys/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {sshKeys: JSON.parse(res.text)} );
     })
@@ -44,6 +46,7 @@ class Keys extends React.Component {
 
   fetchGPGKeys() {
     request.get('http://127.0.0.1:4000/gpgKeys/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {gpgKeys: JSON.parse(res.text)} );
     })
@@ -54,6 +57,7 @@ class Keys extends React.Component {
 
   deleteAWSKey(name) {
     request.delete('http://127.0.0.1:4000/awsKey/'+name)
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {awsKey: null} );
     })
@@ -67,6 +71,7 @@ class Keys extends React.Component {
     request
       .post('http://127.0.0.1:4000/awsKey/')
       .send({name: name, keyId: keyId, secretKey: secretKey})
+      .set('x-access-token', localStorage.id_token)
       .set('Content-Type', 'application/json')
       .then((res) => {
         // this.fetchAWSKey;
@@ -79,6 +84,7 @@ class Keys extends React.Component {
 
   deleteSshKey(name) {
     request.delete('http://127.0.0.1:4000/sshKeys/'+name)
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.fetchSSHKeys()
     })
@@ -89,6 +95,7 @@ class Keys extends React.Component {
 
   addSshKey(name,username,privateKey) {
     request.post('http://127.0.0.1:4000/sshKeys/')
+    .set('x-access-token', localStorage.id_token)
     .send({name: name, username: username, privateKey: privateKey})
     .set('Content-Type', 'application/json')
     .then((res) => {
@@ -101,6 +108,7 @@ class Keys extends React.Component {
 
   deleteGpgKey(name) {
     request.delete('http://127.0.0.1:4000/gpgKeys/'+name)
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.fetchGPGKeys()
     })
@@ -111,6 +119,7 @@ class Keys extends React.Component {
 
   addGgpKey(name,username,password,privateKey) {
     request.post('http://127.0.0.1:4000/gpgKeys/')
+    .set('x-access-token', localStorage.id_token)
     .send({name: name, username: username, password: password, privateKey: privateKey})
     .set('Content-Type', 'application/json')
     .then((res) => {

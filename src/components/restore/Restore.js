@@ -22,6 +22,7 @@ class Restore extends React.Component {
   fetchKeys() {
 
     request.get('http://127.0.0.1:4000/gpgKeys/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {decryptKeys: JSON.parse(res.text)} );
     })
@@ -34,6 +35,7 @@ class Restore extends React.Component {
   fetchResults() {
 
     request.get('http://127.0.0.1:4000/restores/')
+    .set('x-access-token', localStorage.id_token)
     .then((res) => {
       this.setState( {restoreResults: JSON.parse(res.text)} );
     })
@@ -50,6 +52,7 @@ class Restore extends React.Component {
     request
       .post('http://127.0.0.1:4000/restores/')
       .send({server: server, file: file, dataType: dataType, decryptKey: decryptKey})
+      .set('x-access-token', localStorage.id_token)
       .set('Content-Type', 'application/json')
       .then((res) => {
         var newResults = this.state.restoreResults

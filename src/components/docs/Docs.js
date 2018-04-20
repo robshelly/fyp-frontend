@@ -7,7 +7,7 @@ class SwaggerTest extends Component {
   componentDidMount() {
     SwaggerUi({
       dom_id: '#swaggerContainer',
-      url: 'swagger.json',
+      url: '../swagger.json',
       presets: [presets.apis],
     });
   }
