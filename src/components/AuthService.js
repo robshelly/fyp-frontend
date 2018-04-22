@@ -1,4 +1,8 @@
 import decode from 'jwt-decode';
+
+// User authentication on a React app leanred from the following tutorial
+// https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
+
 export default class AuthService {
     // Initializing important variables
     constructor(domain) {

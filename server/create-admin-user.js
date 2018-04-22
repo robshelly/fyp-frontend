@@ -7,8 +7,8 @@ mongoose.connect(secrets.database); // connect to database
 
 // create a sample user
 var user = new User({ 
-  username: 'admin', 
-  password: 'password'
+  username: 'USERNAME', 
+  password: 'PASSWORD'
 });
 
 // save the sample user

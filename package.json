@@ -35,6 +35,7 @@
     "client": "yarn start",
     "server": "node server/server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "seed": "node /server/create-admin-user.js",
     "start-dev": "nf start -p 3000",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

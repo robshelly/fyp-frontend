@@ -15,13 +15,16 @@ app.set('secret', secrets.secret);
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, x-access-token');
-  req.header('Access-Control-Allow-Headers', 'Content-Type, x-access-token');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-access-token');
+  req.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-access-token');
   if (req.method === "OPTIONS") 
       res.sendStatus(200);
   else 
       next();
 })
+
+// How implemente user authentication with express and JWT learned from the following tutorial
+// https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
 
 // Create authenticate routes
 var authRoutes = express.Router();

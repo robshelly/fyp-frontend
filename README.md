@@ -28,6 +28,10 @@ Build Image with the follwing:
         --build-arg jenkins_password='fyp-project' \
         -t rshelly/dashboard-backup-test-centre .
 
-Run image with the following command
+Run the UI with the following command
 
     docker run --net="host" -d --name dashboard -p 3000:3000 -p 4000:4000 rshelly/dashboard-backup-test-centre
+
+Run image the mangement server with following command
+   
+    docker run -d --name jenkins -p 8080:8080 rshelly/jenkins-backup-test-centre

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import AuthService from './AuthService';
 
+// User authentication on a React app leanred from the following tutorial
+// https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
+
 export default function withAuth(AuthComponent) {
     const Auth = new AuthService('http://localhost:4000');
     return class AuthWrapped extends Component {
